@@ -23,7 +23,14 @@ private TextField sharesTextField;
 private TextField likesTextField;	
 
 private Connection connectDB;
-private int loggedInUserId;
+
+private User user;
+
+
+public CreateController() {
+	this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
+	this.user=ApplicationModel.getInstance().getUser();
+}
 	
 public void createButtonOnAction(ActionEvent e) throws SQLException {
 	int postid = Integer.parseInt(postidTextField.getText().trim());
@@ -32,18 +39,14 @@ public void createButtonOnAction(ActionEvent e) throws SQLException {
 	int postshares= Integer.parseInt(sharesTextField.getText().trim());
 	int postlikes= Integer.parseInt(likesTextField.getText().trim());	
 	
-	PostModel postModel=new PostModel(connectDB);
+	PostModel postModel=new PostModel();
 	
-	postModel.addPost(postid,postcontent,postauthor,postshares,postlikes,loggedInUserId);
+	postModel.addPost(postid,postcontent,postauthor,postshares,postlikes,user.getUserId());
 	
 	}
 	
-public void setDatabaseConnection(Connection connectDB) {
-		this.connectDB = connectDB;
-	}
 
-public void setLoginUserId(int userId) {
-	this.loggedInUserId = userId;
-}
+
+
 
 }

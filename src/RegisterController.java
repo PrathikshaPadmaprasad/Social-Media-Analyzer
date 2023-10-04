@@ -33,6 +33,10 @@ public class RegisterController {
 	private TextField LastNameTextField;
 	
 	private Connection connectDB;
+	
+	public RegisterController() {
+		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
+	}
 
 	public void cancelButtonOnAction(ActionEvent e) {
 		Stage stage = (Stage) cancelButton.getScene().getWindow();
@@ -44,11 +48,7 @@ public class RegisterController {
 
 	}
 
-	public void displayMessage(String username) {
 
-		registerMessageLabel.setText("Hello " + username + ", Welcome to the dashboard");
-
-	}
 
 	public void registerUser() {
 		String username = usernameTextFiled.getText().trim();
@@ -112,7 +112,5 @@ public class RegisterController {
 		}
 	}
 	
-	public void setDatabaseConnection(Connection connectDB) {
-		this.connectDB = connectDB;
-	}
+
 }

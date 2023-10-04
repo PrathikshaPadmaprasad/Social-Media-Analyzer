@@ -23,14 +23,16 @@ public class Main extends Application {
 	
 	@Override // Override the start method in the Application class
 	public void start(Stage primaryStage) throws IOException {
-		connectnow = new DatabaseConnection();
-		connectDB = connectnow.connect();
+		
+//		GET THE INSTANCE OF MAIN MODEL IN MAIN.JAVA
+		connectDB=ApplicationModel.getInstance().getDatabaseConnection();
+		
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Login.fxml"));
 
 		Parent root = fxmlLoader.load();
 		LoginController loginController= fxmlLoader.getController();
-		loginController.setDatabaseConnection(connectDB);
+	
 		primaryStage.setTitle("Data Analytics Hub"); // Set the stage title
 		
 		// Set up a close request event handler

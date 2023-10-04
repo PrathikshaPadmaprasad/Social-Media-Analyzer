@@ -4,8 +4,11 @@
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -28,7 +31,7 @@ import javafx.stage.Stage;
 public class UserDashboardController {
 
 	@FXML
-	private Label LoginMessegaeLabel;
+	private Label LoginMessageLabel;
 	@FXML
 	private Label UserNameLabel;
 	@FXML
@@ -42,10 +45,14 @@ public class UserDashboardController {
 
 	@FXML
 	private Button CreateButton;
+	@FXML
+	private TextField searchtextField;
 
-	private int loggedInUserId;
+	
 	
 	private Connection connectDB;
+	
+	private User user;
 	
 	@FXML
 	private TableView<Post> tableview;
@@ -54,18 +61,22 @@ public class UserDashboardController {
 	@FXML
 	private TableColumn<Post,String> Authorcolumn;
 	
+	public UserDashboardController() {
+		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
+		this.user = ApplicationModel.getInstance().getUser();
+	}
 	
-	public void displayMessage(String username) {
+	public void displayMessage() {
 
-		LoginMessegaeLabel.setText("Hello " + username + ", Welcome to the dashboard");
+		LoginMessageLabel.setText("Hello "+ user.getFirstName()+ " " +user.getLastName() + ", Welcome to the dashboard");
 
 	}
 
-	public void displayUserDetails(String username, String Password, String FirstName, String LastName) {
-		UserNameLabel.setText(username);
-		PasswordLabel.setText(Password);
-		FirstNameLabel.setText(FirstName);
-		LastNameLabel.setText(LastName);
+	public void displayUserDetails() {
+		UserNameLabel.setText(this.user.getUserName());
+		PasswordLabel.setText(user.getPassword());
+		FirstNameLabel.setText(user.getFirstName());
+		LastNameLabel.setText(user.getLastName());
 	}
 
 	public void EditButtonOnAction(ActionEvent e) {
@@ -73,8 +84,7 @@ public class UserDashboardController {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditScene.fxml"));
 			Parent EditSceneParent = loader.load();
 			EditSceneController esc = loader.getController();
-			esc.setDatabaseConnection(connectDB);
-			esc.setLoginUserId(loggedInUserId);
+			
 			Scene EditScene = new Scene(EditSceneParent);
 
 			// Get the stage information
@@ -93,14 +103,8 @@ public class UserDashboardController {
 		}
 	}
 
-	public void setLoginUserId(int userId) {
-		this.loggedInUserId = userId;
-	}
 
-	public void setDatabaseConnection(Connection connectDB) {
-		this.connectDB = connectDB;
-	}
-	
+
 	public void CreateButtonOnAction(ActionEvent e) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("CreateScene.fxml"));
@@ -108,8 +112,8 @@ public class UserDashboardController {
 			CreateController createController = loader.getController();
 
 			
-			createController.setDatabaseConnection(connectDB);
-			createController.setLoginUserId(loggedInUserId);
+			
+
 			
 			Scene createScene = new Scene(createSceneParent);
 			Stage stage = (Stage) CreateButton.getScene().getWindow();
@@ -129,7 +133,7 @@ public class UserDashboardController {
 	}
 	
 	public void populatePosts() throws SQLException {
-		PostModel postModel = new PostModel(connectDB);
+		PostModel postModel = new PostModel();
 		List<Post> posts = postModel.getAllPosts();
 		ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
 		
@@ -148,10 +152,52 @@ public class UserDashboardController {
 
 	private void handleItemSelected(Post newSelection) {
 		
-		System.out.println(newSelection.getId());
+		try {
+		    FXMLLoader loader = new FXMLLoader(getClass().getResource("DisplayPost.fxml"));
+		    Parent displayPostParent = loader.load();
+		    DisplayPostController dsp = loader.getController();
+		    dsp.setdetails(newSelection);
+		    Scene displayPostScene = new Scene(displayPostParent);
+
+		    // Get the stage information
+		    Stage stage = (Stage) tableview.getScene().getWindow();
+
+		    // Switch scene
+		    stage.setScene(displayPostScene);
+		    stage.show();
+
+		} catch (IOException e1) {
+		    e1.printStackTrace();
+		    System.err.println("Error loading DisplayPost.fxml: " + e1.getMessage());
+		} catch (Exception e1) {
+		    e1.printStackTrace();
+		    System.err.println("An unexpected error occurred: " + e1.getMessage());
+		}
+
+	}
+	public void serachButtonOnAction(ActionEvent e) {
+		PostModel postModel=new PostModel();
+		List<Post> postsList = new ArrayList<>();
+		int searchid=Integer.parseInt(searchtextField.getText());
+		try {
+			Post post = postModel.searchbyId(searchid);
+			System.out.println(post);
+			postsList.add(post);
+			ObservableList<Post> observablelist = FXCollections.observableArrayList(postsList);
+			postIdcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
+			Authorcolumn.setCellValueFactory(new PropertyValueFactory<>("Author"));
+			tableview.setItems(observablelist);
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
+	}
+
+	
 	
 		
 	}
 	
-}
+

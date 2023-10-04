@@ -3,14 +3,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javafx.scene.control.TextField;
 
 public class PostModel {
 
 	private Connection connectDB;
+	private TextField searchtextField;
 	
-	public PostModel(Connection connectDB) {
-		this.connectDB = connectDB;
+	public PostModel() {
+		this.connectDB = ApplicationModel.getInstance().getDatabaseConnection();
 	}
 		
 	public void addPost(int postid, String postcontent, String postauthor,int postshares, int postlikes, int loggedInUserId) throws SQLException {
@@ -52,6 +56,32 @@ public class PostModel {
 		return posts;
 		
 	}
+	
+	public Post searchbyId(int searchid) throws SQLException {
+		
+		String checkpostQuery = "SELECT * FROM posts WHERE id = '" + searchid+ "'";
+		PreparedStatement checkpostStatement = connectDB.prepareStatement(checkpostQuery);
+		
+		ResultSet resultSet = checkpostStatement.executeQuery();
+		Post post = null;
+		if (resultSet.next()) {
+			System.out.println("Hello world");
+			int id = resultSet.getInt("id");
+			String content = resultSet.getString("content");
+			String author = resultSet.getString("author");
+			int likes = resultSet.getInt("likes");
+			int shares = resultSet.getInt("shares");
+			int userid = resultSet.getInt("userId");
+			post = new Post(id, content, author, shares, likes, userid);			
+		}
+		
+		if (post == null) {
+			return null;
+		}
+		
+		return post;
+	}
+
 		
 }
 	

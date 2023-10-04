@@ -19,12 +19,17 @@ public class EditSceneController {
 	@FXML
 	private TextField LastNameTextField;
 
-	private int loggedInUserId;
+	private User user;
 
 	private Connection connectDB;
 
 	@FXML
 	private Button UpdateButton;
+	
+	public EditSceneController() {
+		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
+		this.user=ApplicationModel.getInstance().getUser();
+	}
 
 	public void UpdateButtonOnAction(ActionEvent e) {
 
@@ -38,7 +43,7 @@ public class EditSceneController {
 			// Check if the username already exists in the database
 			String UpdateQuery = "Update Users Set UserName='" + UsernameTextField.getText() + "',Password='"
 					+ PasswordTextField.getText() + "',FirstName='" + FirstNameTextField.getText() + "',LastName='"
-					+ LastNameTextField.getText() + "' Where userId=" + loggedInUserId;
+					+ LastNameTextField.getText() + "' Where userId=" + user.getUserId();
 			PreparedStatement checkUserStatement = connectDB.prepareStatement(UpdateQuery);
 			
 			checkUserStatement.executeUpdate();
@@ -51,11 +56,7 @@ public class EditSceneController {
 		}
 	}
 
-	public void setLoginUserId(int userId) {
-		this.loggedInUserId = userId;
-	}
 
-	public void setDatabaseConnection(Connection connectDB) {
-		this.connectDB = connectDB;
-	}
+
+	
 }

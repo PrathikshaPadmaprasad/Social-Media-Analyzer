@@ -31,6 +31,10 @@ public class LoginController {
 	private Label MessageLabel;
 
 	private Connection connectDB;
+	
+	public LoginController() {
+		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
+	}
 
 	
 
@@ -40,7 +44,7 @@ public class LoginController {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("Register.fxml"));
 			Parent registerParent = loader.load();
 			RegisterController rc = loader.getController();
-			rc.setDatabaseConnection(connectDB);
+		
 			Scene registerScene = new Scene(registerParent);
 
 			// Get the stage information
@@ -63,7 +67,7 @@ public class LoginController {
 
 		String username = usernameTextFiled.getText();
 		String password = PasswordTextFiled.getText();
-
+		
 		ResultSet rs = isUserRegistered(username, password);
 
 		if (rs.next()) {
@@ -73,19 +77,22 @@ public class LoginController {
 
 	public void login(ResultSet rs) {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("UserDashboard.fxml"));
-			Parent userDashboardParent = loader.load();
-			UserDashboardController userDashboardController = loader.getController();
-
 			int userid = rs.getInt("userId");
 			String username = rs.getString("UserName");
 			String password = rs.getString("Password");
 			String firstname = rs.getString("FirstName");
 			String lastname = rs.getString("LastName");
-			userDashboardController.setDatabaseConnection(connectDB);
-			userDashboardController.setLoginUserId(userid);
-			userDashboardController.displayMessage(username);
-			userDashboardController.displayUserDetails(username, password, firstname, lastname);
+			
+			User user=new User(userid,username,password,firstname,lastname);
+			ApplicationModel.getInstance().setUser(user);
+			
+			
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("UserDashboard.fxml"));
+			
+			Parent userDashboardParent = loader.load();
+			UserDashboardController userDashboardController = loader.getController();
+			userDashboardController.displayMessage();
+			userDashboardController.displayUserDetails();
 			userDashboardController.populatePosts();
 
 			Scene userScene = new Scene(userDashboardParent);
@@ -130,9 +137,5 @@ public class LoginController {
 			// Handle the exception according to your application's requirements
 			return null; // Assume an error means the user is not registered
 		}
-	}
-	
-	public void setDatabaseConnection(Connection connectDB) {
-		this.connectDB = connectDB;
 	}
 }
