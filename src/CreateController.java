@@ -1,5 +1,7 @@
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,7 +22,9 @@ private TextField authorTextField;
 @FXML
 private TextField sharesTextField;
 @FXML
-private TextField likesTextField;	
+private TextField likesTextField;
+@FXML
+private TextField date_timeTextField;
 
 private Connection connectDB;
 
@@ -37,11 +41,13 @@ public void createButtonOnAction(ActionEvent e) throws SQLException {
 	String postcontent = contentTextField.getText().trim();
 	String postauthor = authorTextField.getText().trim();
 	int postshares= Integer.parseInt(sharesTextField.getText().trim());
-	int postlikes= Integer.parseInt(likesTextField.getText().trim());	
+	int postlikes= Integer.parseInt(likesTextField.getText().trim());
+	  String dateTimeString = date_timeTextField.getText();
+	LocalDateTime date_time=LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 	
 	PostModel postModel=new PostModel();
 	
-	postModel.addPost(postid,postcontent,postauthor,postshares,postlikes,user.getUserId());
+	postModel.addPost(postid,postcontent,postauthor,postshares,postlikes,date_time);
 	
 	}
 	

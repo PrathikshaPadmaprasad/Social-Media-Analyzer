@@ -1,4 +1,8 @@
 import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import javax.print.attribute.DateTimeSyntax;
 
 public class Post {
 	private int id;
@@ -7,15 +11,16 @@ public class Post {
 	private int likes;
 	private int shares;
 	private int userId;
+	private LocalDateTime date_time;
 		
-	public Post(int id, String content, String author,int likes, int shares,int userId) {
+	public Post(int id, String content, String author,int likes, int shares,int userId,LocalDateTime date_time) {
 		this.id=id;
 		this.content=content;
 		this.author=author;
 		this.likes=likes;
 		this.shares=shares;
 		this.userId=userId;
-	
+		this.date_time=date_time;
 	    }
 		
 	
@@ -65,4 +70,15 @@ public class Post {
 		this.userId=userId;
 		
 	}
+
+public String getDateTime() {
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
+    String formattedDateTime = date_time.format(formatter);
+	return formattedDateTime;
+	
 }
+public void setLocalDateTime(LocalDateTime date_time) {
+	this.date_time=date_time;
+}
+}
+	

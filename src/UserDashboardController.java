@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +61,14 @@ public class UserDashboardController {
 	private TableColumn<Post,Integer> postIdcolumn;
 	@FXML
 	private TableColumn<Post,String> Authorcolumn;
+	@FXML
+	private TableColumn<Post,Integer> Likescolumn;
+	@FXML
+	private TableColumn<Post,Integer> Sharescolumn;
+	@FXML
+	private TableColumn<Post,LocalDateTime> Date_Timecolumn;
+	@FXML
+	private TableColumn<Post,String> Contentcolumn;
 	
 	public UserDashboardController() {
 		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
@@ -110,11 +119,6 @@ public class UserDashboardController {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("CreateScene.fxml"));
 			Parent createSceneParent = loader.load();
 			CreateController createController = loader.getController();
-
-			
-			
-
-			
 			Scene createScene = new Scene(createSceneParent);
 			Stage stage = (Stage) CreateButton.getScene().getWindow();
 
@@ -136,9 +140,14 @@ public class UserDashboardController {
 		PostModel postModel = new PostModel();
 		List<Post> posts = postModel.getAllPosts();
 		ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
+		System.out.print(posts);
 		
 		postIdcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
 		Authorcolumn.setCellValueFactory(new PropertyValueFactory<>("Author"));
+		Likescolumn.setCellValueFactory(new PropertyValueFactory<>("Likes"));
+		Sharescolumn.setCellValueFactory(new PropertyValueFactory<>("Shares"));
+		Contentcolumn.setCellValueFactory(new PropertyValueFactory<>("Content"));
+		Date_Timecolumn.setCellValueFactory(new PropertyValueFactory<>("Date_Time"));
 		tableview.setItems(observablelist);
 		
 		
@@ -186,7 +195,32 @@ public class UserDashboardController {
 			ObservableList<Post> observablelist = FXCollections.observableArrayList(postsList);
 			postIdcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
 			Authorcolumn.setCellValueFactory(new PropertyValueFactory<>("Author"));
+			Likescolumn.setCellValueFactory(new PropertyValueFactory<>("Likes"));
+			Sharescolumn.setCellValueFactory(new PropertyValueFactory<>("Shares"));
+			Contentcolumn.setCellValueFactory(new PropertyValueFactory<>("Content"));
+			Date_Timecolumn.setCellValueFactory(new PropertyValueFactory<>("Date_Time"));
 			tableview.setItems(observablelist);
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	}
+	
+	public void deleteButtonOnAction(ActionEvent e) {
+		int deleteid=Integer.parseInt(searchtextField.getText());
+		PostModel postModel=new PostModel();
+		int userid=user.getUserId();
+		try {
+			
+			boolean isDeleted = postModel.deletepost(deleteid,userid);
+	        if (isDeleted) {
+	           
+	            populatePosts();
+	        } else {
+	            System.out.println("Post deletion failed. Post ID: " + deleteid);
+	        }
 			
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
