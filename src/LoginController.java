@@ -68,11 +68,16 @@ public class LoginController {
 		String username = usernameTextFiled.getText();
 		String password = PasswordTextFiled.getText();
 		
+		
 		ResultSet rs = isUserRegistered(username, password);
 
 		if (rs.next()) {
 			login(rs);
+		}else {
+		    
+		    MessageLabel.setText("User is not registered");
 		}
+	
 	}
 
 	public void login(ResultSet rs) {
@@ -93,7 +98,7 @@ public class LoginController {
 			UserDashboardController userDashboardController = loader.getController();
 			userDashboardController.displayMessage();
 			userDashboardController.displayUserDetails();
-			userDashboardController.populatePosts();
+			userDashboardController.populateAllPosts();
 
 			Scene userScene = new Scene(userDashboardParent);
 			Stage stage = (Stage) LoginButton.getScene().getWindow();

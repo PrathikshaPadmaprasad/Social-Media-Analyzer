@@ -70,6 +70,12 @@ public class UserDashboardController {
 	@FXML
 	private TableColumn<Post,String> Contentcolumn;
 	
+	@FXML
+	private TextField mostlikesTextField;
+	
+	@FXML
+	private TextField mostsharesTextField;
+	
 	public UserDashboardController() {
 		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
 		this.user = ApplicationModel.getInstance().getUser();
@@ -136,28 +142,35 @@ public class UserDashboardController {
 		
 	}
 	
-	public void populatePosts() throws SQLException {
-		PostModel postModel = new PostModel();
-		List<Post> posts = postModel.getAllPosts();
-		ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
-		System.out.print(posts);
+	public void populatePosts(ObservableList<Post> observablelist) throws SQLException {
+		
 		
 		postIdcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
 		Authorcolumn.setCellValueFactory(new PropertyValueFactory<>("Author"));
 		Likescolumn.setCellValueFactory(new PropertyValueFactory<>("Likes"));
 		Sharescolumn.setCellValueFactory(new PropertyValueFactory<>("Shares"));
 		Contentcolumn.setCellValueFactory(new PropertyValueFactory<>("Content"));
-		Date_Timecolumn.setCellValueFactory(new PropertyValueFactory<>("Date_Time"));
+		
+		Date_Timecolumn.setCellValueFactory(new PropertyValueFactory<>("DateTime"));
 		tableview.setItems(observablelist);
 		
 		
 		tableview.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-	        if (newSelection != null) {
-	            // Handle the selected item
-	            handleItemSelected(newSelection);
-	        }
-	    });
+			if (newSelection != null) {
+				// Handle the selected item
+				handleItemSelected(newSelection);
+			}
+		});
 	}
+	
+	public void populateAllPosts() throws SQLException {
+		PostModel postModel = new PostModel();
+		List<Post> posts = postModel.getAllPosts();
+		ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
+	
+		populatePosts(observablelist);
+	}
+	
 
 	private void handleItemSelected(Post newSelection) {
 		
@@ -193,13 +206,7 @@ public class UserDashboardController {
 			System.out.println(post);
 			postsList.add(post);
 			ObservableList<Post> observablelist = FXCollections.observableArrayList(postsList);
-			postIdcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
-			Authorcolumn.setCellValueFactory(new PropertyValueFactory<>("Author"));
-			Likescolumn.setCellValueFactory(new PropertyValueFactory<>("Likes"));
-			Sharescolumn.setCellValueFactory(new PropertyValueFactory<>("Shares"));
-			Contentcolumn.setCellValueFactory(new PropertyValueFactory<>("Content"));
-			Date_Timecolumn.setCellValueFactory(new PropertyValueFactory<>("Date_Time"));
-			tableview.setItems(observablelist);
+			populatePosts(observablelist);
 			
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
@@ -217,7 +224,7 @@ public class UserDashboardController {
 			boolean isDeleted = postModel.deletepost(deleteid,userid);
 	        if (isDeleted) {
 	           
-	            populatePosts();
+	            populateAllPosts();
 	        } else {
 	            System.out.println("Post deletion failed. Post ID: " + deleteid);
 	        }
@@ -228,8 +235,39 @@ public class UserDashboardController {
 		}
 		
 	}
-
 	
+	public void likesokButtonOnAction(ActionEvent e) {
+		int N =Integer.parseInt(mostlikesTextField.getText());
+		PostModel postModel=new PostModel();
+		try {
+			List<Post> posts = postModel.toplikes(N);
+			ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
+			
+			
+			populatePosts(observablelist);		
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	public void sharesokButtonOnAction(ActionEvent e) {
+		int N =Integer.parseInt(mostsharesTextField.getText());
+		PostModel postModel=new PostModel();
+		try {
+			List<Post> posts = postModel.topshares(N);
+			ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
+			
+			
+			populatePosts(observablelist);		
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
 	
 		
 	}

@@ -48,7 +48,7 @@ public void backbuttonOnAction(ActionEvent e) {
 		
 		Controller.displayMessage();
 		Controller.displayUserDetails();
-		Controller.populatePosts();
+		Controller.populateAllPosts();
 		
 		Scene UserDashboardScene = new Scene(UserDashboardParent);
 		Stage stage = (Stage) backButton.getScene().getWindow();

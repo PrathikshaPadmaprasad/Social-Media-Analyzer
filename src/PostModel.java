@@ -1,7 +1,11 @@
 import java.sql.Connection;
+
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -9,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import javafx.scene.control.TextField;
+
+import java.sql.Date;
 
 public class PostModel {
 
@@ -20,19 +26,32 @@ public class PostModel {
 		this.user=ApplicationModel.getInstance().getUser();
 	}
 		
-	public void addPost(int postid, String postcontent, String postauthor,int postshares, int postlikes, LocalDateTime date_time) throws SQLException {
-		Post newPost = new Post(postid,postcontent,postauthor,postshares,postlikes,user.getUserId(),date_time);
-		
-		String insertUserQuery = "INSERT INTO posts (id,content,author,likes,shares,userId) VALUES (?, ?, ?, ?, ?,?)";
-		PreparedStatement insertUserStatement = connectDB.prepareStatement(insertUserQuery);
-		insertUserStatement.setInt(1, newPost.getId());
-		insertUserStatement.setString(2, newPost.getContent());
-		insertUserStatement.setString(3, newPost.getAuthor());
-		insertUserStatement.setInt(4, newPost.getLikes());
-		insertUserStatement.setInt(5, newPost.getShares());
-		insertUserStatement.setInt(6, newPost.getuserId());
-		insertUserStatement.executeUpdate();
-		System.out.println("Post created sucessfully");
+	public String addPost(int postid, String postcontent, String postauthor,int postshares, int postlikes, LocalDateTime date_time) {
+		try {
+			
+			Post newPost = new Post(postid,postcontent,postauthor,postshares,postlikes,user.getUserId(),date_time);
+			
+			String insertUserQuery = "INSERT INTO posts (id,content,author,likes,shares,userId,DateTime) VALUES (?, ?, ?, ?, ?,?,?)";
+			PreparedStatement insertUserStatement = connectDB.prepareStatement(insertUserQuery);
+			insertUserStatement.setInt(1, newPost.getId());
+			insertUserStatement.setString(2, newPost.getContent());
+			insertUserStatement.setString(3, newPost.getAuthor());
+			insertUserStatement.setInt(4, newPost.getLikes());
+			insertUserStatement.setInt(5, newPost.getShares());
+			insertUserStatement.setInt(6, newPost.getuserId());
+//			java.sql.Date sqlDate = java.sql.Date.valueOf(newPost.getDateTime().toLocalDate());
+//			Time sqlTime = java.sql.Time.valueOf(newPost.getDateTime().toLocalTime());
+			Timestamp timestamp = Timestamp.valueOf(newPost.getDateTime());
+			insertUserStatement.setTimestamp(7, timestamp);
+//			insertUserStatement.setDate(7, sqlDate);
+//			insertUserStatement.setTime(7, sqlTime);
+			insertUserStatement.executeUpdate();
+			
+			return "Post Created Sucessfully";
+		}
+		catch (SQLException e) {
+			return e.getMessage();
+		}
 		
 	}
 	
@@ -50,8 +69,16 @@ public class PostModel {
             int likes = resultSet.getInt("likes");
             int shares = resultSet.getInt("shares");
             int userid = resultSet.getInt("userId");
-            String dateTimeString = resultSet.getString("datetime");
-            LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            Timestamp timestamp = resultSet.getTimestamp("DateTime");
+            LocalDateTime dateTime = timestamp.toLocalDateTime();
+//            java.sql.Date sqlDate = resultSet.getDate("DateTime");
+//            
+//            Time sqlTime = resultSet.getTime("DateTime");
+////            String dateTimeString = resultSet.getString("datetime");
+//            System.out.println(sqlDate);
+//            System.out.println(sqlTime);
+//            String dateAndTime = sqlDate.toString() + " " + sqlTime.toString();
+//            LocalDateTime dateTime = LocalDateTime.parse(, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
             
 
@@ -96,8 +123,63 @@ public class PostModel {
 		return true;
 			
 		}
+	
+	public List<Post> toplikes(int N) throws SQLException {
+		List<Post> posts = new ArrayList<>();
+	    String toplikesquery = "SELECT * FROM posts ORDER BY likes DESC LIMIT ?";
+        PreparedStatement preparedStatement = connectDB.prepareStatement(toplikesquery);
+		preparedStatement.setInt(1, N);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		while (resultSet.next()) {
+            int id = resultSet.getInt("id");
+            String content = resultSet.getString("content");
+            String author = resultSet.getString("author");
+            int likes = resultSet.getInt("likes");
+            int shares = resultSet.getInt("shares");
+            int userid = resultSet.getInt("userId");
+            Timestamp timestamp = resultSet.getTimestamp("DateTime");
+            LocalDateTime dateTime = timestamp.toLocalDateTime();
 
+
+            
+
+            Post post = new Post(id, content, author, likes, shares,userid,dateTime);
+            posts.add(post);
+		
+
+		}
+		return posts;
 	}
+	
+	public List<Post> topshares(int N) throws SQLException {
+		List<Post> posts = new ArrayList<>();
+	    String topsharesquery = "SELECT * FROM posts ORDER BY shares DESC LIMIT ?";
+        PreparedStatement preparedStatement = connectDB.prepareStatement(topsharesquery);
+		preparedStatement.setInt(1, N);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		while (resultSet.next()) {
+            int id = resultSet.getInt("id");
+            String content = resultSet.getString("content");
+            String author = resultSet.getString("author");
+            int likes = resultSet.getInt("likes");
+            int shares = resultSet.getInt("shares");
+            int userid = resultSet.getInt("userId");
+            Timestamp timestamp = resultSet.getTimestamp("DateTime");
+            LocalDateTime dateTime = timestamp.toLocalDateTime();
+
+
+            
+
+            Post post = new Post(id, content, author, likes, shares,userid,dateTime);
+            posts.add(post);
+		
+
+		}
+		return posts;
+	}
+}
 		
 
 	
