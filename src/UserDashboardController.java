@@ -27,6 +27,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class UserDashboardController {
@@ -266,6 +267,12 @@ public class UserDashboardController {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+	public void exportbuttonOnAction(ActionEvent e) {
+		PostModel postModel=new PostModel();
+		int postid=Integer.parseInt(searchtextField.getText());
+	
+		postModel.exportPostToCSV(postid );
 	}
 
 	

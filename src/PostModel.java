@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 
 
@@ -13,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.sql.Date;
 
@@ -179,7 +185,71 @@ public class PostModel {
 		}
 		return posts;
 	}
-}
+		  
+	    public void exportPostToCSV(int postId) {
+	        try {
+	        	  FileChooser fileChooser = new FileChooser();
+
+	             // Set the initial directory (optional)
+	             File initialDirectory = new File(System.getProperty("user.home"));
+	             fileChooser.setInitialDirectory(initialDirectory);
+
+	             // Set extension filters (optional)
+	             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
+	             fileChooser.getExtensionFilters().add(extFilter);
+	            // Show save dialog
+	            Stage stage = new Stage();
+	            File file = fileChooser.showSaveDialog(stage);
+
+	            if (file != null) {
+	                // The user has chosen a file
+	                String filePath = file.getAbsolutePath();
+
+	                String query = "SELECT * FROM posts WHERE id = ?";
+	                PreparedStatement preparedStatement = connectDB.prepareStatement(query);
+	                preparedStatement.setInt(1, postId);
+
+	                ResultSet resultSet = preparedStatement.executeQuery();
+
+	                // Check if the post with the specified ID exists
+	                if (resultSet.next()) {
+	                    // Retrieve post details
+	                    int id = resultSet.getInt("id");
+	                    String content = resultSet.getString("content");
+	                    String author=resultSet.getString("author");
+	                    int likes=resultSet.getInt("likes");
+	                    int shares= resultSet.getInt("shares");
+	                    int userId=resultSet.getInt("userId");
+	                    
+
+	                    // Save to CSV
+	                    writeToCSV(filePath, id, content,author,likes,shares,userId);
+	                    System.out.println("Post with ID " + postId + " exported to CSV successfully.");
+	                } else {
+	                    System.out.println("Post with ID " + postId + " not found.");
+	                }
+	            } else {
+	                System.out.println("Export canceled by the user.");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    // Other methods...
+
+	    private void writeToCSV(String filePath, int id, String content,String author,int likes, int shares, int userId) {
+	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+	            writer.write("ID,Content,Author,likes,shares,userId\n"); // Write CSV header
+	            writer.write(id + "," + content + "," + author + "," + likes + "," + shares + "," + userId + "\n");
+
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+
+
 		
 
 	
