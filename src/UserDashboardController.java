@@ -275,6 +275,27 @@ public class UserDashboardController {
 		postModel.exportPostToCSV(postid );
 	}
 
+	public void logoutbuttonOnAction(ActionEvent e) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+			Parent LoginSceneParent = loader.load();
+			LoginController Controller = loader.getController();
+			Scene loginScene = new Scene(LoginSceneParent);
+			Stage stage = (Stage) CreateButton.getScene().getWindow();
+
+			stage.setScene(loginScene);
+			stage.show();
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			System.err.println("Error loading Register.fxml: " + e1.getMessage());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			System.err.println("An unexpected error occurred: " + e1.getMessage());
+		}
+
+		
+	}
 	
 		
 	}

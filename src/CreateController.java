@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.DateTimeException;
@@ -6,9 +7,13 @@ import java.time.format.DateTimeFormatter;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class CreateController {
 	
@@ -27,6 +32,9 @@ private TextField sharesTextField;
 private TextField likesTextField;
 @FXML
 private TextField date_timeTextField;
+
+@FXML
+private Button createbackbutton;
 
 @FXML
 private Label warningLabel;
@@ -122,11 +130,42 @@ public void createButtonOnAction(ActionEvent e) throws SQLException {
 	System.out.print(outputAfterInserting);
 	warningLabel.setText("Id should be unique");
 }
+
+public void createbackbuttonOnAction(ActionEvent e) {
+	try {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("UserDashboard.fxml"));
+		Parent UserDashboardParent = loader.load();
+		UserDashboardController Controller = loader.getController();
+
+		
+		Controller.displayMessage();
+		Controller.displayUserDetails();
+		Controller.populateAllPosts();
+		
+		Scene UserDashboardScene = new Scene(UserDashboardParent);
+		Stage stage = (Stage) createbackbutton.getScene().getWindow();
+
+		stage.setScene(UserDashboardScene);
+		stage.show();
+
+	} catch (IOException e1) {
+		e1.printStackTrace();
+		System.err.println("Error loading Register.fxml: " + e1.getMessage());
+	} catch (Exception e1) {
+		e1.printStackTrace();
+		System.err.println("An unexpected error occurred: " + e1.getMessage());
+	}
+
 	
-	
-	
-
-
-
-
 }
+
+	
+}
+	
+	
+	
+
+
+
+
+

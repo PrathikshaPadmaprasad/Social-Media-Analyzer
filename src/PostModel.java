@@ -77,17 +77,6 @@ public class PostModel {
             int userid = resultSet.getInt("userId");
             Timestamp timestamp = resultSet.getTimestamp("DateTime");
             LocalDateTime dateTime = timestamp.toLocalDateTime();
-//            java.sql.Date sqlDate = resultSet.getDate("DateTime");
-//            
-//            Time sqlTime = resultSet.getTime("DateTime");
-////            String dateTimeString = resultSet.getString("datetime");
-//            System.out.println(sqlDate);
-//            System.out.println(sqlTime);
-//            String dateAndTime = sqlDate.toString() + " " + sqlTime.toString();
-//            LocalDateTime dateTime = LocalDateTime.parse(, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-            
-
             Post post = new Post(id, content, author, likes, shares,userid,dateTime);
             posts.add(post);
         }
@@ -100,7 +89,6 @@ public class PostModel {
 		
 		String checkpostQuery = "SELECT * FROM posts WHERE id = '" + searchid+ "'";
 		PreparedStatement checkpostStatement = connectDB.prepareStatement(checkpostQuery);
-		
 		ResultSet resultSet = checkpostStatement.executeQuery();
 		Post post = null;
 		if (resultSet.next()) {
@@ -174,10 +162,6 @@ public class PostModel {
             int userid = resultSet.getInt("userId");
             Timestamp timestamp = resultSet.getTimestamp("DateTime");
             LocalDateTime dateTime = timestamp.toLocalDateTime();
-
-
-            
-
             Post post = new Post(id, content, author, likes, shares,userid,dateTime);
             posts.add(post);
 		
@@ -219,11 +203,11 @@ public class PostModel {
 	                    String author=resultSet.getString("author");
 	                    int likes=resultSet.getInt("likes");
 	                    int shares= resultSet.getInt("shares");
-	                    int userId=resultSet.getInt("userId");
-	                    
-
+	                    int userId=resultSet.getInt("userId"); 
+	                    Timestamp timestamp = resultSet.getTimestamp("DateTime");
+	                    LocalDateTime dateTime = timestamp.toLocalDateTime();
 	                    // Save to CSV
-	                    writeToCSV(filePath, id, content,author,likes,shares,userId);
+	                    writeToCSV(filePath, id, content,author,likes,shares,userId,dateTime);
 	                    System.out.println("Post with ID " + postId + " exported to CSV successfully.");
 	                } else {
 	                    System.out.println("Post with ID " + postId + " not found.");
@@ -236,12 +220,10 @@ public class PostModel {
 	        }
 	    }
 
-	    // Other methods...
-
-	    private void writeToCSV(String filePath, int id, String content,String author,int likes, int shares, int userId) {
+	    private void writeToCSV(String filePath, int id, String content,String author,int likes, int shares, int userId,LocalDateTime date_time) {
 	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-	            writer.write("ID,Content,Author,likes,shares,userId\n"); // Write CSV header
-	            writer.write(id + "," + content + "," + author + "," + likes + "," + shares + "," + userId + "\n");
+	            writer.write("ID,Content,Author,likes,shares,userId,dateTime\n"); 
+	            writer.write(id + "," + content + "," + author + "," + likes + "," + shares + "," + userId + "," + date_time+"\n");
 
 	        } catch (IOException e) {
 	            e.printStackTrace();

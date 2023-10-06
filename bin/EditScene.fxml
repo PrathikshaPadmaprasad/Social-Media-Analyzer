@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="623.0" prefWidth="812.0" style="-fx-background-color: #b39eb5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EditSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="623.0" prefWidth="812.0" style="-fx-background-color: #395f73;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EditSceneController">
    <children>
       <Label />
       <Label layoutX="75.0" layoutY="171.0" prefHeight="17.0" prefWidth="57.0" text="UserName">
@@ -24,10 +24,11 @@
       </Label>
       <Label layoutX="128.0" layoutY="179.0" prefHeight="0.0" prefWidth="335.0" />
       <Label prefHeight="0.0" prefWidth="335.0" />
-      <TextField fx:id="UsernameTextField" layoutX="141.0" layoutY="167.0" text="GIUWRGGHIUOF" />
+      <TextField fx:id="UsernameTextField" layoutX="141.0" layoutY="167.0" />
       <TextField fx:id="PasswordTextField" layoutX="141.0" layoutY="197.0" />
       <TextField fx:id="FirstNameTextField" layoutX="141.0" layoutY="229.0" />
       <TextField fx:id="LastNameTextField" layoutX="141.0" layoutY="263.0" />
-      <Button fx:id="UpdateButton" layoutX="192.0" layoutY="312.0" mnemonicParsing="false" onAction="#UpdateButtonOnAction" text="Update" />
+      <Button fx:id="UpdateButton" layoutX="139.0" layoutY="312.0" mnemonicParsing="false" onAction="#UpdateButtonOnAction" text="Update" />
+      <Button fx:id="editbackbutton" layoutX="211.0" layoutY="312.0" mnemonicParsing="false" onAction="#editbackButtonOnAction" text="back" />
    </children>
 </AnchorPane>
