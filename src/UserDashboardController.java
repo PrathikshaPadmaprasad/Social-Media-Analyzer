@@ -49,7 +49,8 @@ public class UserDashboardController {
 	private Button CreateButton;
 	@FXML
 	private TextField searchtextField;
-
+@FXML
+private Label errormessage;
 	
 	
 	private Connection connectDB;
@@ -76,6 +77,9 @@ public class UserDashboardController {
 	
 	@FXML
 	private TextField mostsharesTextField;
+	
+	@FXML
+	private Label errorLabel;
 	
 	public UserDashboardController() {
 		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
@@ -201,79 +205,146 @@ public class UserDashboardController {
 	public void serachButtonOnAction(ActionEvent e) {
 		PostModel postModel=new PostModel();
 		List<Post> postsList = new ArrayList<>();
-		int searchid=Integer.parseInt(searchtextField.getText());
+		if (searchtextField.getText().isEmpty()) {
+			errormessage.setText("postid field cannot be empty");
+			return;
+		}
 		try {
+		int searchid=Integer.parseInt(searchtextField.getText());
 			Post post = postModel.searchbyId(searchid);
-			System.out.println(post);
+			
+			if (post == null) {
+	            errormessage.setText("Post with ID " + searchid + " does not exist.");
+	            return;
+	        }
+//			System.out.println(post);
 			postsList.add(post);
 			ObservableList<Post> observablelist = FXCollections.observableArrayList(postsList);
 			populatePosts(observablelist);
 			
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch(NumberFormatException e2) {
+			errormessage.setText("postid field should be a positive integer");
+		}
+		catch (SQLException e1) {
+			errormessage.setText("postid field  should be a positive integer");
+		
 		}
 		
 	}
 	
 	public void deleteButtonOnAction(ActionEvent e) {
+		
+		
+		if (searchtextField.getText().isEmpty()) {
+			errormessage.setText("postid field cannot be empty");
+			return;
+			}
+		try {
 		int deleteid=Integer.parseInt(searchtextField.getText());
 		PostModel postModel=new PostModel();
+		
 		int userid=user.getUserId();
-		try {
 			
 			boolean isDeleted = postModel.deletepost(deleteid,userid);
 	        if (isDeleted) {
 	           
 	            populateAllPosts();
 	        } else {
-	            System.out.println("Post deletion failed. Post ID: " + deleteid);
+	            errormessage.setText("Post deletion failed. Post ID: " + deleteid);
 	        }
 			
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch(NumberFormatException e2) {
+			errormessage.setText("postid field should be a positive integer");
 		}
+		catch (SQLException e1) {
+			errormessage.setText("postid field  should be a positive integer");
+		
+		}
+		
 		
 	}
 	
 	public void likesokButtonOnAction(ActionEvent e) {
-		int N =Integer.parseInt(mostlikesTextField.getText());
+		
+		if(mostlikesTextField.getText().isEmpty()) {
+			errormessage.setText("likes cannot be empty");
+			return;
+		}
+	
 		PostModel postModel=new PostModel();
 		try {
+			int N =Integer.parseInt(mostlikesTextField.getText());
+			
+			if (N <= 0) {
+	            errormessage.setText("Likes should be a positive integer");
+	            return;
+	        }
 			List<Post> posts = postModel.toplikes(N);
 			ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
 			
 			
 			populatePosts(observablelist);		
 			
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch(NumberFormatException e2) {
+			errormessage.setText("postid field should be a positive integer");
+		}
+		catch (SQLException e1) {
+			errormessage.setText("postid field  should be a positive integer");
+		
 		}
 	}
 
 	public void sharesokButtonOnAction(ActionEvent e) {
-		int N =Integer.parseInt(mostsharesTextField.getText());
-		PostModel postModel=new PostModel();
+		
+		if(mostsharesTextField.getText().isEmpty()) {
+			errormessage.setText("likes cannot be empty");
+			return;
+		}
 		try {
+		int N =Integer.parseInt(mostsharesTextField.getText());
+		if (N <= 0) {
+            errormessage.setText("Shares should be a positive integer");
+            return;
+        }
+		PostModel postModel=new PostModel();
+		
 			List<Post> posts = postModel.topshares(N);
 			ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
 			
 			
 			populatePosts(observablelist);		
 			
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch(NumberFormatException e2) {
+			errormessage.setText("shares  should be a positive integer");
+		}
+		catch (SQLException e1) {
+			errormessage.setText("shares  should be a positive integer");
+		
 		}
 	}
+	
+	
+	
 	public void exportbuttonOnAction(ActionEvent e) {
+		
+		if(searchtextField.getText().isEmpty()) {
+			errormessage.setText("post id  cannot be empty");
+			return;
+		}
+
 		PostModel postModel=new PostModel();
 		int postid=Integer.parseInt(searchtextField.getText());
 	
-		postModel.exportPostToCSV(postid );
-	}
+//		postModel.exportPostToCSV(postid );
+		 if (postModel.exportPostToCSV(postid)) {
+		       
+			 errormessage.setText("Post with ID " + postid + " exported to CSV successfully.");
+		    } else {
+		       
+		        errormessage.setText("Post with ID " + postid + " not found.");
+		    }
+		}
+	
 
 	public void logoutbuttonOnAction(ActionEvent e) {
 		try {
@@ -282,6 +353,8 @@ public class UserDashboardController {
 			LoginController Controller = loader.getController();
 			Scene loginScene = new Scene(LoginSceneParent);
 			Stage stage = (Stage) CreateButton.getScene().getWindow();
+			
+			ApplicationModel.getInstance().setUser(null);
 
 			stage.setScene(loginScene);
 			stage.show();

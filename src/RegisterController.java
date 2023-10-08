@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +8,9 @@ import java.util.UUID;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -31,6 +35,8 @@ public class RegisterController {
 
 	@FXML
 	private TextField LastNameTextField;
+	@FXML
+	private Button registerloginbutton;
 	
 	private Connection connectDB;
 	
@@ -48,7 +54,32 @@ public class RegisterController {
 
 	}
 
+	public void registerloginbuttonOnAction(ActionEvent e) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+			Parent LoginSceneParent = loader.load();
+			LoginController login = loader.getController();
+			
+			Scene LoginScene = new Scene(LoginSceneParent);
 
+			// Get the stage information
+			Stage stage = (Stage) registerloginbutton.getScene().getWindow();
+
+			// Switch scene
+			stage.setScene(LoginScene);
+			stage.show();
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			System.err.println("Error loading Register.fxml: " + e1.getMessage());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			System.err.println("An unexpected error occurred: " + e1.getMessage());
+		}
+	}
+
+		
+	
 
 	public void registerUser() {
 		String username = usernameTextFiled.getText().trim();
@@ -63,52 +94,27 @@ public class RegisterController {
 			// this)
 			return;
 		}
-		try {
-			
-			// Check if the username already exists in the database
-			String checkUserQuery = "SELECT COUNT(*) FROM users WHERE username = ?";
-			PreparedStatement checkUserStatement = connectDB.prepareStatement(checkUserQuery);
-			checkUserStatement.setString(1, username);
-			ResultSet resultSet = checkUserStatement.executeQuery();
-			resultSet.next();
-			int userCount = resultSet.getInt(1);
-
-			if (userCount > 0) {
+		
+		UserModel userModel = new UserModel();
+		
+		// Check if the username already exists in the database
+		
+		if (userModel.isUserRegisteredAlready(username)) {
 //			            System.out.println("This username is already taken.");
-				registerMessageLabel.setText("This username is already registered");
-				// Display an error message to the user (you can use an alert or a label for
-				// this)
-				return;
-			}
-			String countquery = "SELECT COUNT(*) AS row_count FROM users";
-			PreparedStatement countStatement = connectDB.prepareStatement(countquery);
-			ResultSet r = countStatement.executeQuery();
-			int row = 0;
-			if (r.next()) {
-				row = r.getInt("row_count");
-				row++;
-			}
-
-			// Insert the user into the database
-
-			String insertUserQuery = "INSERT INTO Users (userId,UserName, Password, FirstName, LastName) VALUES (?, ?, ?, ?, ?)";
-			PreparedStatement insertUserStatement = connectDB.prepareStatement(insertUserQuery);
-			insertUserStatement.setInt(1, row);
-			insertUserStatement.setString(2, username);
-			insertUserStatement.setString(3, password);
-			insertUserStatement.setString(4, firstName);
-			insertUserStatement.setString(5, lastName);
-			insertUserStatement.executeUpdate();
-
-			// Display a success message to the user (you can use an alert or a label for
-			// this)
-			registerMessageLabel.setText("User Registered sucesfully!");
-			
-
-		} catch (SQLException e) {
-			System.out.println("An error occurred during registration: " + e.getMessage());
+			registerMessageLabel.setText("This username is already registered");
 			// Display an error message to the user (you can use an alert or a label for
 			// this)
+			return;
+		}
+		
+		int newUserId = userModel.getNewRegistrationUserId();
+		User user = new User(newUserId, username, password, firstName, lastName);
+		if (userModel.register(user)) {
+			registerMessageLabel.setText("User Registered sucesfully!");
+			
+		}
+		else {
+			registerMessageLabel.setText("User Registeration failed!");
 		}
 	}
 	

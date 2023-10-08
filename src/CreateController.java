@@ -127,8 +127,8 @@ public void createButtonOnAction(ActionEvent e) throws SQLException {
 	PostModel postModel=new PostModel();
 	
 	String outputAfterInserting = postModel.addPost(postid,postcontent,postauthor,postshares,postlikes,date_time);
-	System.out.print(outputAfterInserting);
-	warningLabel.setText("Id should be unique");
+//	System.out.print(outputAfterInserting);
+	warningLabel.setText(outputAfterInserting);
 }
 
 public void createbackbuttonOnAction(ActionEvent e) {

@@ -12,7 +12,7 @@
 <AnchorPane fx:id="exportbutton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragDetected="#exportbuttonOnAction" prefHeight="720.0" prefWidth="864.0" style="-fx-background-color: #395f73;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserDashboardController">
    <children>
       <Label layoutX="152.0" layoutY="371.0" prefHeight="25.0" prefWidth="31.0" />
-      <Label fx:id="LoginMessageLabel" layoutX="174.0" layoutY="83.0" prefHeight="25.0" prefWidth="511.0" style="-fx-background-color: #FFFFED;" />
+      <Label fx:id="LoginMessageLabel" layoutX="16.0" layoutY="73.0" prefHeight="25.0" prefWidth="511.0" style="-fx-background-color: #FFFFED;" />
       <Label fx:id="UserNameLabel" layoutX="32.0" layoutY="115.0" prefHeight="17.0" prefWidth="57.0" text="UserName">
          <font>
             <Font size="12.0" />
@@ -66,5 +66,6 @@
       <Button fx:id="sharesokbutton" layoutX="783.0" layoutY="417.0" mnemonicParsing="false" onAction="#sharesokButtonOnAction" text="ok" />
       <Button fx:id="exportbutton" layoutX="141.0" layoutY="336.0" mnemonicParsing="false" onAction="#exportbuttonOnAction" text="Export" />
       <Button fx:id="logoutbutton" layoutX="758.0" layoutY="671.0" mnemonicParsing="false" onAction="#logoutbuttonOnAction" text="Logout" />
+      <Label fx:id="errormessage" layoutX="233.0" layoutY="305.0" onDragDetected="#deleteButtonOnAction" prefHeight="17.0" prefWidth="230.0" />
    </children>
 </AnchorPane>
