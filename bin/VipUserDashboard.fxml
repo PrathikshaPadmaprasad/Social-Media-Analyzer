@@ -1,70 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="exportbutton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragDetected="#exportbuttonOnAction" prefHeight="720.0" prefWidth="864.0" style="-fx-background-color: #f0eded;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserDashboardController">
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VipController">
    <children>
-      <Label layoutX="152.0" layoutY="371.0" prefHeight="25.0" prefWidth="31.0" />
-      <Label fx:id="LoginMessageLabel" layoutX="16.0" layoutY="73.0" prefHeight="25.0" prefWidth="511.0" style="-fx-background-color: #FFFFED;" />
-      <Label fx:id="UserNameLabel" layoutX="32.0" layoutY="115.0" prefHeight="17.0" prefWidth="57.0" text="UserName">
+      <PieChart fx:id="piechart" layoutX="317.0" layoutY="162.0" prefHeight="457.0" prefWidth="526.0" />
+      <Label alignment="CENTER" layoutX="-6.0" layoutY="-3.0" prefHeight="97.0" prefWidth="871.0" text="                                                Distribution of #shares" textFill="#1b1919">
          <font>
-            <Font size="12.0" />
+            <Font name="Times New Roman Bold" size="28.0" />
          </font>
       </Label>
-      <Label fx:id="PasswordLabel" layoutX="34.0" layoutY="144.0" text="Password" />
-      <Label layoutX="32.0" layoutY="169.0" text="FirstName" />
-      <Label layoutX="32.0" layoutY="192.0" text="LastName" />
-      <Button fx:id="EditButton" layoutX="35.0" layoutY="223.0" mnemonicParsing="false" onAction="#EditButtonOnAction" prefHeight="26.0" prefWidth="52.0" text="EDIT" />
-      <Label layoutX="364.0" layoutY="26.0" prefHeight="25.0" prefWidth="118.0" text="DASHBOARD">
-         <font>
-            <Font name="Arial Black" size="16.0" />
-         </font>
-      </Label>
-      <Label layoutX="118.0" layoutY="169.0" prefHeight="0.0" prefWidth="335.0" />
-      <Label layoutX="128.0" layoutY="179.0" prefHeight="0.0" prefWidth="335.0" />
-      <Label layoutX="118.0" layoutY="169.0" prefHeight="0.0" prefWidth="335.0" />
-      <Label prefHeight="0.0" prefWidth="335.0" />
-      <Label fx:id="PasswordLabel" layoutX="107.0" layoutY="144.0" prefHeight="17.0" prefWidth="289.0" />
-      <Label fx:id="FirstNameLabel" layoutX="107.0" layoutY="171.0" prefHeight="17.0" prefWidth="289.0" />
-      <Label fx:id="LastNameLabel" layoutX="107.0" layoutY="192.0" prefHeight="17.0" prefWidth="300.0" />
-      <Label fx:id="UserNameLabel" layoutX="107.0" layoutY="115.0" prefHeight="0.0" prefWidth="434.0" />
-      <Button fx:id="CreateButton" layoutX="732.0" layoutY="336.0" mnemonicParsing="false" onAction="#CreateButtonOnAction" text="create" />
-      <Label layoutX="46.0" layoutY="375.0" />
-      <TableView fx:id="tableview" layoutX="32.0" layoutY="459.0" prefHeight="199.0" prefWidth="782.0">
-         <columns>
-            <TableColumn fx:id="postIdcolumn" prefWidth="106.0" text="postId" />
-            <TableColumn fx:id="Authorcolumn" prefWidth="138.0" text="Author" />
-            <TableColumn fx:id="Likescolumn" prefWidth="108.0" text="Likes" />
-            <TableColumn fx:id="Sharescolumn" prefWidth="108.0" text="shares" />
-            <TableColumn fx:id="Contentcolumn" prefWidth="155.0" text="content" />
-            <TableColumn fx:id="Date_Timecolumn" prefWidth="166.0" text="DateTime" />
-         </columns>
-      </TableView>
-      <TextField fx:id="searchtextField" layoutX="17.0" layoutY="300.0" onAction="#serachButtonOnAction" prefHeight="25.0" prefWidth="202.0" />
-      <Button fx:id="searchButton" layoutX="19.0" layoutY="336.0" mnemonicParsing="false" onAction="#serachButtonOnAction" text="search" />
-      <Label layoutX="16.0" layoutY="274.0" prefHeight="26.0" prefWidth="182.0" text="Enter post id ">
-         <font>
-            <Font name="Arial" size="13.0" />
-         </font>
-      </Label>
-      <Button fx:id="deleteButton" layoutX="81.0" layoutY="336.0" mnemonicParsing="false" onAction="#deleteButtonOnAction" text="Delete" />
-      <Label layoutX="408.0" layoutY="435.0" text="Posts" />
-      <Separator prefWidth="200.0" />
-      <TextField fx:id="mostlikesTextField" layoutX="27.0" layoutY="414.0" />
-      <Label layoutX="25.0" layoutY="396.0" text="topmostlikes " />
-      <Label fx:id="topmostshares" layoutX="693.0" layoutY="396.0" text="topmostshares" />
-      <TextField fx:id="mostsharesTextField" layoutX="654.0" layoutY="417.0" />
-      <Button fx:id="likesokbutton" layoutX="159.0" layoutY="414.0" mnemonicParsing="false" onAction="#likesokButtonOnAction" text="ok" />
-      <Button fx:id="sharesokbutton" layoutX="783.0" layoutY="417.0" mnemonicParsing="false" onAction="#sharesokButtonOnAction" text="ok" />
-      <Button fx:id="exportbutton" layoutX="141.0" layoutY="336.0" mnemonicParsing="false" onAction="#exportbuttonOnAction" text="Export" />
-      <Button fx:id="logoutbutton" layoutX="758.0" layoutY="671.0" mnemonicParsing="false" onAction="#logoutbuttonOnAction" text="Logout" />
-      <Label fx:id="errormessage" layoutX="233.0" layoutY="305.0" onDragDetected="#deleteButtonOnAction" prefHeight="17.0" prefWidth="230.0" />
+      <AnchorPane prefHeight="730.0" prefWidth="295.0" style="-fx-background-color: #395f73;">
+         <children>
+            <Label layoutX="12.0" layoutY="175.0" prefHeight="142.0" prefWidth="220.0" text="Data Analytics Hub" textFill="#f2ecec">
+               <font>
+                  <Font name="Arial Black" size="20.0" />
+               </font>
+            </Label>
+            <Line endX="114.0" layoutX="115.0" layoutY="262.0" startX="-100.0" stroke="#ebe7e7" />
+            <Circle fill="#e3e4e53b" layoutX="121.0" layoutY="257.0" radius="119.0" stroke="#e3e3e300" strokeType="INSIDE" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

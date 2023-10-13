@@ -54,6 +54,7 @@ public class UserDashboardController {
 	private Button CreateButton;
 	@FXML
 	private TextField searchtextField;
+	
 @FXML
 private Label errormessage;
 	
@@ -96,6 +97,7 @@ private Label errormessage;
 	
 	public void displayMessage() { 
 		vipbutton.setVisible(!(user instanceof VipUser));
+		piebutton.setVisible(user instanceof VipUser);
 		String vipOrNonVipUser = "";
 		if (user instanceof VipUser) {
 			vipOrNonVipUser = "VIP User";
@@ -403,10 +405,30 @@ private Label errormessage;
 	        
 	    }
 	}
-		
-
-	}
+	@FXML
+	private Button piebutton;
 	
+	public void piebuttonOnAction(ActionEvent e) {
+		
+		PostModel postModel = new PostModel();
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("VipUserDashboard.fxml"));
+			Parent VipUserDashboardParent = loader.load();
+			VipController vipController = loader.getController();
+			vipController.pie();
+			Scene vipScene = new Scene(VipUserDashboardParent);
+			Stage stage = (Stage) piebutton.getScene().getWindow();
+		    stage.setScene(vipScene);
+		    stage.show();
+			
+	}catch(Exception e3) {
+		System.out.println(e3.getMessage());
+		
+	}
+	}
+
+	
+}
 		
 	
 	
