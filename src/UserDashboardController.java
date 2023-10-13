@@ -11,17 +11,22 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -80,15 +85,27 @@ private Label errormessage;
 	
 	@FXML
 	private Label errorLabel;
+	@FXML
+	private Button vipbutton;
 	
 	public UserDashboardController() {
 		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
 		this.user = ApplicationModel.getInstance().getUser();
+
 	}
 	
-	public void displayMessage() {
+	public void displayMessage() { 
+		vipbutton.setVisible(!(user instanceof VipUser));
+		String vipOrNonVipUser = "";
+		if (user instanceof VipUser) {
+			vipOrNonVipUser = "VIP User";
+		}
+		else {
+			vipOrNonVipUser = "NonVip User";
+		}
 
-		LoginMessageLabel.setText("Hello "+ user.getFirstName()+ " " +user.getLastName() + ", Welcome to the dashboard");
+		LoginMessageLabel.setText("Hello "+ user.getFirstName()+ " " +user.getLastName() + ", Welcome to the dashboard, you are a -" + vipOrNonVipUser);
+		
 
 	}
 
@@ -370,7 +387,27 @@ private Label errormessage;
 		
 	}
 	
-		
+	public void vipbuttonOnAction(ActionEvent e) {
+	    Alert alert = new Alert(AlertType.CONFIRMATION);
+	    alert.setTitle("VIP Confirmation Dialog");
+	    alert.setHeaderText("Would you like to subscribe to the application for a monthly fee of $0?");
+
+	    Optional<ButtonType> result = alert.showAndWait();
+	    if (result.isPresent() && result.get() == ButtonType.OK) {
+            UserModel userModel=new UserModel();
+	        Alert infoAlert = new Alert(AlertType.INFORMATION);
+	        infoAlert.setTitle("VIP Information Dialog");
+	        infoAlert.setHeaderText("Please log out and log in again to access VIP functionalities.");
+	        userModel.upgradeToVip(user);
+	        infoAlert.showAndWait();
+	        
+	    }
 	}
+		
+
+	}
+	
+		
+	
 	
 

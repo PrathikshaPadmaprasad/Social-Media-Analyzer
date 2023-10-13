@@ -22,7 +22,7 @@ public class UserModel {
 
 	public boolean login(String username, String password) {
 		try {
-			
+			User user;
 			String query = "SELECT * FROM users WHERE Username ='" + username + "' and Password='" + password + "'";
 			
 			Statement statement = connectDB.createStatement();
@@ -37,8 +37,15 @@ public class UserModel {
 			int userid = resultSet.getInt("userId");
 			String firstname = resultSet.getString("FirstName");
 			String lastname = resultSet.getString("LastName");
+			String vipStatus= resultSet.getString("VipStatus");
+			System.out.println(vipStatus);
 			
-			User user=new User(userid,username,password,firstname,lastname);
+			if(vipStatus.equals("No")){
+				user= new NonVipUser(userid,username,password,firstname,lastname);
+			}
+			else {
+				user= new VipUser(userid,username,password,firstname,lastname);
+			}
 			ApplicationModel.getInstance().setUser(user);
 			
 			return true;
@@ -51,13 +58,14 @@ public class UserModel {
 	
 	public boolean register(User user) {
 		try {
-			String insertUserQuery = "INSERT INTO Users (userId,UserName, Password, FirstName, LastName) VALUES (?, ?, ?, ?, ?)";
+			String insertUserQuery = "INSERT INTO Users (userId,UserName, Password, FirstName, LastName,VipStatus) VALUES (?, ?, ?, ?, ?, ?)";
 			PreparedStatement insertUserStatement = connectDB.prepareStatement(insertUserQuery);
 			insertUserStatement.setInt(1, user.getUserId());
 			insertUserStatement.setString(2, user.getUserName());
 			insertUserStatement.setString(3, user.getPassword());
 			insertUserStatement.setString(4, user.getFirstName());
 			insertUserStatement.setString(5, user.getLastName());
+			insertUserStatement.setString(6, "No");
 			insertUserStatement.executeUpdate();
 			
 			return true;
@@ -127,4 +135,19 @@ public class UserModel {
 			 return false;
 		 }
 }
+	 
+	 public void upgradeToVip(User user) {
+		 
+		 try {
+			 String UpdateQuery = "Update Users Set VipStatus='Yes' where userId='" +user.getUserId()+"'";
+			 PreparedStatement checkUserStatement = connectDB.prepareStatement(UpdateQuery);
+				
+				checkUserStatement.executeUpdate();
+				
+				
+		 }catch(Exception e) {
+			 System.out.println("Update Unscucessfull");
+		 }
+		 
+	 }
 }
