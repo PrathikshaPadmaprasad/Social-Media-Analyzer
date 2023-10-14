@@ -1,5 +1,9 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
@@ -244,7 +248,7 @@ public class PostModel {
 					return true;
 				}
 			}
-		} catch (SQLException e) {
+		} catch (SQLException e) {	
 
 			return false;
 		}
@@ -272,28 +276,46 @@ public class PostModel {
 			PreparedStatement preparedStatement = connectDB.prepareStatement(query);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			return resultSet;
-			
-//			if (resultSet.next()) {
-//				int shareCount0To99 = resultSet.getInt("range_0_to_99");
-//				int shareCount100To999 = resultSet.getInt("range_100_to_999");
-//				int shareCount1000AndAbove = resultSet.getInt("range_1000_and_above");
-//
-//				ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-//						new PieChart.Data("0-99", shareCount0To99), 
-//						new PieChart.Data("100-999", shareCount100To999),
-//						new PieChart.Data("1000+", shareCount1000AndAbove));
-//				
-//				PieChart piechart= new PieChart(pieChartData);
-//				paneview.getChildren().add(piechart);
-//				
-//		        
-//		          
-//			}
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return null;
 		}
-
 	}
+	
+	
+	public List<String[]> readCSV() {
+		
+		String filePath="/Users/prathikshacp/Docs/RMIT/2 SEM/Advanced Programming/posts.csv";
+		
+        List<String[]> records = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean isFirstLine = true;
+
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    // Skip the first line (header)
+                    isFirstLine = false;
+                    continue;
+                }
+          
+                String[] values = line.split(",");
+                records.add(values);
+                
+            }
+        }catch (FileNotFoundException e) {
+         
+          System.out.println("fILE NOT FOUND") ;
+        }
+            catch (IOException e) {
+            System.err.println("Error reading CSV file: " + e.getMessage());
+        }
+
+        return records;
+	}
+	
+	
+	
 }

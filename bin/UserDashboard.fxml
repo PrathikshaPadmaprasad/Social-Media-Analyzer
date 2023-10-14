@@ -79,12 +79,13 @@
             </Label>
          </center>
       </BorderPane>
-      <ToolBar layoutX="17.0" layoutY="351.0" prefHeight="52.0" prefWidth="389.0">
+      <ToolBar layoutX="17.0" layoutY="354.0" prefHeight="49.0" prefWidth="537.0">
          <items>
             <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteButtonOnAction" prefHeight="3.0" prefWidth="85.0" style="-fx-background-color: #263F73;" text="Delete" textFill="#fcfafa" />
             <Button fx:id="exportbutton" mnemonicParsing="false" onAction="#exportbuttonOnAction" prefHeight="23.0" prefWidth="74.0" style="-fx-background-color: #263F73;" text="Export" textFill="#f8f5f5" />
             <Button fx:id="searchButton" mnemonicParsing="false" onAction="#serachButtonOnAction" prefHeight="25.0" prefWidth="94.0" style="-fx-background-color: #263F73;" text="search" textFill="#fffbfb" />
             <Button fx:id="piebutton" mnemonicParsing="false" onAction="#piebuttonOnAction" prefHeight="26.0" prefWidth="104.0" style="-fx-background-color: #263F73;" text="Show pie  chart" textFill="#fffefe" />
+            <Button fx:id="importbutton" layoutX="277.0" layoutY="16.0" mnemonicParsing="false" onAction="#importbuttonOnAction" prefHeight="26.0" prefWidth="104.0" style="-fx-background-color: #263F73;" text="Import CSV" textFill="#fffefe" />
          </items>
       </ToolBar>
       <BorderPane layoutY="273.0" prefHeight="11.0" prefWidth="864.0" style="-fx-background-color: #395f73;">

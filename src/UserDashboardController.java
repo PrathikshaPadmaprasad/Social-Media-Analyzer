@@ -1,6 +1,7 @@
 //import javafx.fxml.FXML;
 //import javafx.scene.control.Label;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -8,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,60 +57,61 @@ public class UserDashboardController {
 	private Button CreateButton;
 	@FXML
 	private TextField searchtextField;
-	
-@FXML
-private Label errormessage;
-	
-	
+
+	@FXML
+	private Label errormessage;
+
 	private Connection connectDB;
-	
+
 	private User user;
-	
+
 	@FXML
 	private TableView<Post> tableview;
 	@FXML
-	private TableColumn<Post,Integer> postIdcolumn;
+	private TableColumn<Post, Integer> postIdcolumn;
 	@FXML
-	private TableColumn<Post,String> Authorcolumn;
+	private TableColumn<Post, String> Authorcolumn;
 	@FXML
-	private TableColumn<Post,Integer> Likescolumn;
+	private TableColumn<Post, Integer> Likescolumn;
 	@FXML
-	private TableColumn<Post,Integer> Sharescolumn;
+	private TableColumn<Post, Integer> Sharescolumn;
 	@FXML
-	private TableColumn<Post,LocalDateTime> Date_Timecolumn;
+	private TableColumn<Post, LocalDateTime> Date_Timecolumn;
 	@FXML
-	private TableColumn<Post,String> Contentcolumn;
-	
+	private TableColumn<Post, String> Contentcolumn;
+
 	@FXML
 	private TextField mostlikesTextField;
-	
+
 	@FXML
 	private TextField mostsharesTextField;
-	
+
 	@FXML
 	private Label errorLabel;
 	@FXML
 	private Button vipbutton;
-	
+	@FXML
+	private Button importbutton;
+
 	public UserDashboardController() {
-		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
+		this.connectDB = ApplicationModel.getInstance().getDatabaseConnection();
 		this.user = ApplicationModel.getInstance().getUser();
 
 	}
-	
-	public void displayMessage() { 
+
+	public void displayMessage() {
 		vipbutton.setVisible(!(user instanceof VipUser));
 		piebutton.setVisible(user instanceof VipUser);
+		importbutton.setVisible(user instanceof VipUser);
 		String vipOrNonVipUser = "";
 		if (user instanceof VipUser) {
 			vipOrNonVipUser = "VIP User";
-		}
-		else {
+		} else {
 			vipOrNonVipUser = "NonVip User";
 		}
 
-		LoginMessageLabel.setText("Hello "+ user.getFirstName()+ " " +user.getLastName() + ", Welcome to the dashboard, you are a -" + vipOrNonVipUser);
-		
+		LoginMessageLabel.setText("Hello " + user.getFirstName() + " " + user.getLastName()
+				+ ", Welcome to the dashboard, you are a -" + vipOrNonVipUser);
 
 	}
 
@@ -123,7 +127,7 @@ private Label errormessage;
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditScene.fxml"));
 			Parent EditSceneParent = loader.load();
 			EditSceneController esc = loader.getController();
-			
+
 			Scene EditScene = new Scene(EditSceneParent);
 
 			// Get the stage information
@@ -141,8 +145,6 @@ private Label errormessage;
 			System.err.println("An unexpected error occurred: " + e1.getMessage());
 		}
 	}
-
-
 
 	public void CreateButtonOnAction(ActionEvent e) {
 		try {
@@ -163,22 +165,19 @@ private Label errormessage;
 			System.err.println("An unexpected error occurred: " + e1.getMessage());
 		}
 
-		
 	}
-	
+
 	public void populatePosts(ObservableList<Post> observablelist) throws SQLException {
-		
-		
+
 		postIdcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
 		Authorcolumn.setCellValueFactory(new PropertyValueFactory<>("Author"));
 		Likescolumn.setCellValueFactory(new PropertyValueFactory<>("Likes"));
 		Sharescolumn.setCellValueFactory(new PropertyValueFactory<>("Shares"));
 		Contentcolumn.setCellValueFactory(new PropertyValueFactory<>("Content"));
-		
+
 		Date_Timecolumn.setCellValueFactory(new PropertyValueFactory<>("DateTime"));
 		tableview.setItems(observablelist);
-		
-		
+
 		tableview.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
 				// Handle the selected item
@@ -186,184 +185,173 @@ private Label errormessage;
 			}
 		});
 	}
-	
+
 	public void populateAllPosts() throws SQLException {
 		PostModel postModel = new PostModel();
 		List<Post> posts = postModel.getAllPosts();
 		ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
-	
+
 		populatePosts(observablelist);
 	}
-	
 
 	private void handleItemSelected(Post newSelection) {
-		
+
 		try {
-		    FXMLLoader loader = new FXMLLoader(getClass().getResource("DisplayPost.fxml"));
-		    Parent displayPostParent = loader.load();
-		    DisplayPostController dsp = loader.getController();
-		    dsp.setdetails(newSelection);
-		    Scene displayPostScene = new Scene(displayPostParent);
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("DisplayPost.fxml"));
+			Parent displayPostParent = loader.load();
+			DisplayPostController dsp = loader.getController();
+			dsp.setdetails(newSelection);
+			Scene displayPostScene = new Scene(displayPostParent);
 
-		    // Get the stage information
-		    Stage stage = (Stage) tableview.getScene().getWindow();
+			// Get the stage information
+			Stage stage = (Stage) tableview.getScene().getWindow();
 
-		    // Switch scene
-		    stage.setScene(displayPostScene);
-		    stage.show();
+			// Switch scene
+			stage.setScene(displayPostScene);
+			stage.show();
 
 		} catch (IOException e1) {
-		    e1.printStackTrace();
-		    System.err.println("Error loading DisplayPost.fxml: " + e1.getMessage());
+			e1.printStackTrace();
+			System.err.println("Error loading DisplayPost.fxml: " + e1.getMessage());
 		} catch (Exception e1) {
-		    e1.printStackTrace();
-		    System.err.println("An unexpected error occurred: " + e1.getMessage());
+			e1.printStackTrace();
+			System.err.println("An unexpected error occurred: " + e1.getMessage());
 		}
 
 	}
+
 	public void serachButtonOnAction(ActionEvent e) {
-		PostModel postModel=new PostModel();
+		PostModel postModel = new PostModel();
 		List<Post> postsList = new ArrayList<>();
 		if (searchtextField.getText().isEmpty()) {
 			errormessage.setText("postid field cannot be empty");
 			return;
 		}
 		try {
-		int searchid=Integer.parseInt(searchtextField.getText());
+			int searchid = Integer.parseInt(searchtextField.getText());
 			Post post = postModel.searchbyId(searchid);
-			
+
 			if (post == null) {
-	            errormessage.setText("Post with ID " + searchid + " does not exist.");
-	            return;
-	        }
+				errormessage.setText("Post with ID " + searchid + " does not exist.");
+				return;
+			}
 //			System.out.println(post);
 			postsList.add(post);
 			ObservableList<Post> observablelist = FXCollections.observableArrayList(postsList);
 			populatePosts(observablelist);
-			
-		} catch(NumberFormatException e2) {
+
+		} catch (NumberFormatException e2) {
 			errormessage.setText("postid field should be a positive integer");
-		}
-		catch (SQLException e1) {
+		} catch (SQLException e1) {
 			errormessage.setText("postid field  should be a positive integer");
-		
+
 		}
-		
+
 	}
-	
+
 	public void deleteButtonOnAction(ActionEvent e) {
-		
-		
+
 		if (searchtextField.getText().isEmpty()) {
 			errormessage.setText("postid field cannot be empty");
 			return;
-			}
+		}
 		try {
-		int deleteid=Integer.parseInt(searchtextField.getText());
-		PostModel postModel=new PostModel();
-		
-		int userid=user.getUserId();
-			
-			boolean isDeleted = postModel.deletepost(deleteid,userid);
-	        if (isDeleted) {
-	           
-	            populateAllPosts();
-	        } else {
-	            errormessage.setText("Post deletion failed. Post ID: " + deleteid);
-	        }
-			
-		} catch(NumberFormatException e2) {
+			int deleteid = Integer.parseInt(searchtextField.getText());
+			PostModel postModel = new PostModel();
+
+			int userid = user.getUserId();
+
+			boolean isDeleted = postModel.deletepost(deleteid, userid);
+			if (isDeleted) {
+
+				populateAllPosts();
+			} else {
+				errormessage.setText("Post deletion failed. Post ID: " + deleteid);
+			}
+
+		} catch (NumberFormatException e2) {
 			errormessage.setText("postid field should be a positive integer");
-		}
-		catch (SQLException e1) {
+		} catch (SQLException e1) {
 			errormessage.setText("postid field  should be a positive integer");
-		
+
 		}
-		
-		
+
 	}
-	
+
 	public void likesokButtonOnAction(ActionEvent e) {
-		
-		if(mostlikesTextField.getText().isEmpty()) {
+
+		if (mostlikesTextField.getText().isEmpty()) {
 			errormessage.setText("likes cannot be empty");
 			return;
 		}
-	
-		PostModel postModel=new PostModel();
+
+		PostModel postModel = new PostModel();
 		try {
-			int N =Integer.parseInt(mostlikesTextField.getText());
-			
+			int N = Integer.parseInt(mostlikesTextField.getText());
+
 			if (N <= 0) {
-	            errormessage.setText("Likes should be a positive integer");
-	            return;
-	        }
+				errormessage.setText("Likes should be a positive integer");
+				return;
+			}
 			List<Post> posts = postModel.toplikes(N);
 			ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
-			
-			
-			populatePosts(observablelist);		
-			
-		} catch(NumberFormatException e2) {
+
+			populatePosts(observablelist);
+
+		} catch (NumberFormatException e2) {
 			errormessage.setText("postid field should be a positive integer");
-		}
-		catch (SQLException e1) {
+		} catch (SQLException e1) {
 			errormessage.setText("postid field  should be a positive integer");
-		
+
 		}
 	}
 
 	public void sharesokButtonOnAction(ActionEvent e) {
-		
-		if(mostsharesTextField.getText().isEmpty()) {
+
+		if (mostsharesTextField.getText().isEmpty()) {
 			errormessage.setText("likes cannot be empty");
 			return;
 		}
 		try {
-		int N =Integer.parseInt(mostsharesTextField.getText());
-		if (N <= 0) {
-            errormessage.setText("Shares should be a positive integer");
-            return;
-        }
-		PostModel postModel=new PostModel();
-		
+			int N = Integer.parseInt(mostsharesTextField.getText());
+			if (N <= 0) {
+				errormessage.setText("Shares should be a positive integer");
+				return;
+			}
+			PostModel postModel = new PostModel();
+
 			List<Post> posts = postModel.topshares(N);
 			ObservableList<Post> observablelist = FXCollections.observableArrayList(posts);
-			
-			
-			populatePosts(observablelist);		
-			
-		} catch(NumberFormatException e2) {
+
+			populatePosts(observablelist);
+
+		} catch (NumberFormatException e2) {
 			errormessage.setText("shares  should be a positive integer");
-		}
-		catch (SQLException e1) {
+		} catch (SQLException e1) {
 			errormessage.setText("shares  should be a positive integer");
-		
+
 		}
 	}
-	
-	
-	
+
 	public void exportbuttonOnAction(ActionEvent e) {
-		
-		if(searchtextField.getText().isEmpty()) {
+
+		if (searchtextField.getText().isEmpty()) {
 			errormessage.setText("post id  cannot be empty");
 			return;
 		}
 
-		PostModel postModel=new PostModel();
-		int postid=Integer.parseInt(searchtextField.getText());
-	
+		PostModel postModel = new PostModel();
+		int postid = Integer.parseInt(searchtextField.getText());
+
 //		postModel.exportPostToCSV(postid );
-		 if (postModel.exportPostToCSV(postid)) {
-		       
-			 errormessage.setText("Post with ID " + postid + " exported to CSV successfully.");
-		    } else {
-		       
-		        errormessage.setText("Post with ID " + postid + " not found.");
-		    }
+		if (postModel.exportPostToCSV(postid)) {
+
+			errormessage.setText("Post with ID " + postid + " exported to CSV successfully.");
+		} else {
+
+			errormessage.setText("Post with ID " + postid + " not found.");
 		}
-	
+	}
 
 	public void logoutbuttonOnAction(ActionEvent e) {
 		try {
@@ -372,7 +360,7 @@ private Label errormessage;
 			LoginController Controller = loader.getController();
 			Scene loginScene = new Scene(LoginSceneParent);
 			Stage stage = (Stage) CreateButton.getScene().getWindow();
-			
+
 			ApplicationModel.getInstance().setUser(null);
 
 			stage.setScene(loginScene);
@@ -386,30 +374,30 @@ private Label errormessage;
 			System.err.println("An unexpected error occurred: " + e1.getMessage());
 		}
 
-		
 	}
-	
-	public void vipbuttonOnAction(ActionEvent e) {
-	    Alert alert = new Alert(AlertType.CONFIRMATION);
-	    alert.setTitle("VIP Confirmation Dialog");
-	    alert.setHeaderText("Would you like to subscribe to the application for a monthly fee of $0?");
 
-	    Optional<ButtonType> result = alert.showAndWait();
-	    if (result.isPresent() && result.get() == ButtonType.OK) {
-            UserModel userModel=new UserModel();
-	        Alert infoAlert = new Alert(AlertType.INFORMATION);
-	        infoAlert.setTitle("VIP Information Dialog");
-	        infoAlert.setHeaderText("Please log out and log in again to access VIP functionalities.");
-	        userModel.upgradeToVip(user);
-	        infoAlert.showAndWait();
-	        
-	    }
+	public void vipbuttonOnAction(ActionEvent e) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("VIP Confirmation Dialog");
+		alert.setHeaderText("Would you like to subscribe to the application for a monthly fee of $0?");
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.isPresent() && result.get() == ButtonType.OK) {
+			UserModel userModel = new UserModel();
+			Alert infoAlert = new Alert(AlertType.INFORMATION);
+			infoAlert.setTitle("VIP Information Dialog");
+			infoAlert.setHeaderText("Please log out and log in again to access VIP functionalities.");
+			userModel.upgradeToVip(user);
+			infoAlert.showAndWait();
+
+		}
 	}
+
 	@FXML
 	private Button piebutton;
-	
+
 	public void piebuttonOnAction(ActionEvent e) {
-		
+
 		PostModel postModel = new PostModel();
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("VipUserDashboard.fxml"));
@@ -418,18 +406,80 @@ private Label errormessage;
 			vipController.pie();
 			Scene vipScene = new Scene(VipUserDashboardParent);
 			Stage stage = (Stage) piebutton.getScene().getWindow();
-		    stage.setScene(vipScene);
-		    stage.show();
-			
-	}catch(Exception e3) {
-		System.out.println(e3.getMessage());
-		
-	}
+			stage.setScene(vipScene);
+			stage.show();
+
+		} catch (Exception e3) {
+			System.out.println(e3.getMessage());
+
+		}
 	}
 
-	
+	public void alert() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Import Error");
+		alert.setHeaderText("Error importing CSV");
+		alert.setContentText("An error occurred while importing the CSV file. Please check the file format.");
+		alert.showAndWait();
+
+	}
+
+	public void importCSV() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+		File selectedFile = fileChooser.showOpenDialog(new Stage());
+
+		if (selectedFile != null) {
+			System.out.println("uygfurgu");
+try {
+				PostModel postModel = new PostModel();
+				List<String[]> records = postModel.readCSV();
+				
+				if (records != null) {
+					System.out.println("Hi");
+
+					for (String[] record : records) {
+						System.out.println("please run");
+						
+						if (record.length >= 6) {
+							System.out.println(record);
+							int id = Integer.parseInt(record[0]);
+							String author = record[1];
+							int likes = Integer.parseInt(record[2]);
+							int shares = Integer.parseInt(record[3]);
+							String content = record[4];
+							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
+							LocalDateTime datetime = LocalDateTime.parse(record[5], formatter);
+
+							// Assuming you have a Post constructor that accepts these parameters
+							Post post = new Post(id, author, content, likes, shares, user.getUserId(), datetime);
+							tableview.getItems().add(post);
+						}
+					}
+				}
+
+			}
+		
+			catch (NumberFormatException e) {
+				// Handle NumberFormatException
+				alert();
+				// Or log the exception
+			} catch (DateTimeParseException e) {
+				alert();				
+				
+				// Or log the exception
+			} catch (Exception e) {
+				// Handle any other exceptions
+				alert();
+				 // Or log the exception
+			}
+
+		}
+
+	}
+
+	public void importbuttonOnAction(ActionEvent e) {
+		importCSV();
+	}
+
 }
-		
-	
-	
-
