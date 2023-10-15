@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import controller.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,9 +11,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import model.ApplicationModel;
+import model.DatabaseConnection;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+
 
 
 public class Main extends Application {
@@ -28,7 +32,7 @@ public class Main extends Application {
 		connectDB=ApplicationModel.getInstance().getDatabaseConnection();
 		
 		
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Login.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
 
 		Parent root = fxmlLoader.load();
 		LoginController loginController= fxmlLoader.getController();
@@ -56,7 +60,7 @@ public class Main extends Application {
                 }
             });
         });
-		primaryStage.setScene(new Scene(root, 835, 505));/* create a Scene object pass it here */ // Place the scene in
+		primaryStage.setScene(new Scene(root, 864, 720));/* create a Scene object pass it here */ // Place the scene in
 																									// the stage
 		primaryStage.show(); // Display the stage
 
