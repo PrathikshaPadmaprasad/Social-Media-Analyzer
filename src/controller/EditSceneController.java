@@ -15,8 +15,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.ApplicationModel;
+import model.NonVipUser;
 import model.User;
 import model.UserModel;
+import model.VipUser;
 
 public class EditSceneController {
 
@@ -57,10 +59,17 @@ public class EditSceneController {
 			updateLabel.setText("No blanks filed allowed");
 			return;
 		}
-
-		User edituser=new User(this.user.getUserId(), username, password, firstName, lastName);
+		
+		User editUser;
+		if (user instanceof VipUser) {
+			editUser = new VipUser(this.user.getUserId(), username, password, firstName, lastName);
+		}
+		else {
+			editUser =new NonVipUser(this.user.getUserId(), username, password, firstName, lastName);
+		}
+		
 		UserModel usermodel=new UserModel();
-		if(usermodel.userdetailsupdate(edituser)){
+		if(usermodel.userdetailsupdate(editUser)){
 			updateLabel.setText("Update successful");
 
 		} else {

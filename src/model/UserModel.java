@@ -1,4 +1,5 @@
 package model;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,43 +13,40 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class UserModel {
-	
+
 	private Connection connectDB;
-	
+
 	public UserModel() {
 		this.connectDB = ApplicationModel.getInstance().getDatabaseConnection();
 	}
-	
-	
 
 	public boolean login(String username, String password) {
 		try {
 			User user;
 			String query = "SELECT * FROM users WHERE Username ='" + username + "' and Password='" + password + "'";
-			
+
 			Statement statement = connectDB.createStatement();
 
 			// Execute the query
 			ResultSet resultSet = statement.executeQuery(query);
-			
+
 			if (!resultSet.next()) {
 				return false;
 			}
-			
+
 			int userid = resultSet.getInt("userId");
 			String firstname = resultSet.getString("FirstName");
 			String lastname = resultSet.getString("LastName");
-			String vipStatus= resultSet.getString("VipStatus");
+			String vipStatus = resultSet.getString("VipStatus");
 			System.out.println(vipStatus);
-			
-			if(vipStatus.equals("No")){
-				user= new NonVipUser(userid,username,password,firstname,lastname);
-			}
-			else {
-				user= new VipUser(userid,username,password,firstname,lastname);
+
+			if (vipStatus.equals("No")) {
+				user = new NonVipUser(userid, username, password, firstname, lastname);
+			} else {
+				user = new VipUser(userid, username, password, firstname, lastname);
 			}
 			ApplicationModel.getInstance().setUser(user);
-			
+
 			return true;
 
 		} catch (Exception e1) {
@@ -56,7 +54,7 @@ public class UserModel {
 		}
 
 	}
-	
+
 	public boolean register(User user) {
 		try {
 			String insertUserQuery = "INSERT INTO Users (userId,UserName, Password, FirstName, LastName,VipStatus) VALUES (?, ?, ?, ?, ?, ?)";
@@ -68,19 +66,18 @@ public class UserModel {
 			insertUserStatement.setString(5, user.getLastName());
 			insertUserStatement.setString(6, "No");
 			insertUserStatement.executeUpdate();
-			
+
 			return true;
-			
-		}
-		catch (SQLException e) {
+
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			return false;
 		}
 	}
-	
+
 	public boolean isUserRegisteredAlready(String username) {
-	try {
-			
+		try {
+
 			// Check if the username already exists in the database
 			String checkUserQuery = "SELECT COUNT(*) FROM users WHERE username = ?";
 			PreparedStatement checkUserStatement = connectDB.prepareStatement(checkUserQuery);
@@ -89,16 +86,15 @@ public class UserModel {
 			int userCount = resultSet.getInt(1);
 			System.out.println(userCount);
 			if (userCount > 0) {
-				return true;				
+				return true;
 			}
 			return false;
 
+		} catch (SQLException e) {
+			return false;
+		}
 	}
-	catch(SQLException e) {
-		return false;
-	}
-	}
-	
+
 	public int getNewRegistrationUserId() {
 		try {
 			String countquery = "SELECT COUNT(*) AS row_count FROM users";
@@ -116,39 +112,40 @@ public class UserModel {
 		}
 	}
 
+	public boolean userdetailsupdate(User edituser) {
+		try {
 
-	 public boolean userdetailsupdate(User edituser) {
-		 try {
+			// Check if the username already exists in the database
+			String UpdateQuery = "Update Users Set UserName='" + edituser.getUserName() + "',Password='"
+					+ edituser.getPassword() + "',FirstName='" + edituser.getFirstName() + "',LastName='"
+					+ edituser.getLastName() + "' Where userId=" + ApplicationModel.getInstance().getUser().getUserId();
+			PreparedStatement checkUserStatement = connectDB.prepareStatement(UpdateQuery);
 
-				// Check if the username already exists in the database
-				String UpdateQuery = "Update Users Set UserName='" + edituser.getUserName() + "',Password='"
-						+ edituser.getPassword() + "',FirstName='" + edituser.getFirstName() + "',LastName='"
-						+ edituser.getLastName()+ "' Where userId=" + ApplicationModel.getInstance().getUser().getUserId();
-				PreparedStatement checkUserStatement = connectDB.prepareStatement(UpdateQuery);
-				
-				checkUserStatement.executeUpdate();
+			int rowsUpdated = checkUserStatement.executeUpdate();
+			if (rowsUpdated > 0) {
+
 				ApplicationModel.getInstance().setUser(edituser);
 				return true;
-				
+			} else {
+				return false;
+			}
 
-	 }
-		 catch (SQLException e) {
-			 return false;
-		 }
-}
-	 
-	 public void upgradeToVip(User user) {
-		 
-		 try {
-			 String UpdateQuery = "Update Users Set VipStatus='Yes' where userId='" +user.getUserId()+"'";
-			 PreparedStatement checkUserStatement = connectDB.prepareStatement(UpdateQuery);
-				
-				checkUserStatement.executeUpdate();
-				
-				
-		 }catch(Exception e) {
-			 System.out.println("Update Unscucessfull");
-		 }
-		 
-	 }
+		} catch (SQLException e) {
+			return false;
+		}
+	}
+
+	public void upgradeToVip(User user) {
+
+		try {
+			String UpdateQuery = "Update Users Set VipStatus='Yes' where userId='" + user.getUserId() + "'";
+			PreparedStatement checkUserStatement = connectDB.prepareStatement(UpdateQuery);
+
+			checkUserStatement.executeUpdate();
+
+		} catch (Exception e) {
+			System.out.println("Update Unscucessfull");
+		}
+
+	}
 }

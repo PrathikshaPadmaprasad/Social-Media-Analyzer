@@ -206,7 +206,7 @@ public class UserDashboardController {
 	private void handleItemSelected(Post newSelection) {
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("view/DisplayPost.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DisplayPost.fxml"));
 			Parent displayPostParent = loader.load();
 			DisplayPostController dsp = loader.getController();
 			dsp.setdetails(newSelection);
@@ -275,7 +275,7 @@ public class UserDashboardController {
 
 				populateAllPosts();
 			} else {
-				errormessage.setText("Post deletion failed. Post ID: " + deleteid);
+				errormessage.setText("Post deletion failed. (Post ID:" + deleteid +") not found or does not belong to you.");
 			}
 
 		} catch (NumberFormatException e2) {
@@ -348,18 +348,41 @@ public class UserDashboardController {
 			errormessage.setText("post id  cannot be empty");
 			return;
 		}
-
 		PostModel postModel = new PostModel();
 		int postid = Integer.parseInt(searchtextField.getText());
-
-//		postModel.exportPostToCSV(postid );
-		if (postModel.exportPostToCSV(postid)) {
-
-			errormessage.setText("Post with ID " + postid + " exported to CSV successfully.");
-		} else {
-
+		Post post = postModel.exportPostToCSV(postid);
+		
+		if (post == null) {
 			errormessage.setText("Post with ID " + postid + " not found.");
+			return;
 		}
+
+		try {
+		
+			FileChooser fileChooser = new FileChooser();
+			
+			// Set the initial directory (optional)
+			File initialDirectory = new File(System.getProperty("user.home"));
+			fileChooser.setInitialDirectory(initialDirectory);
+			
+			// Set extension filters (optional)
+			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
+			fileChooser.getExtensionFilters().add(extFilter);
+			
+			// Show save dialog
+			Stage stage = new Stage();
+			File file = fileChooser.showSaveDialog(stage);
+			
+			if (file != null) {
+				// The user has chosen a file
+				String filePath = file.getAbsolutePath();
+				// Save to CSV
+				postModel.writeToCSV(filePath, post);
+			}
+			errormessage.setText("Post with ID " + postid + " exported to CSV successfully.");
+		}catch (Exception ex) {
+			errormessage.setText("Post with ID " + postid + " not found.");
+		}	
 	}
 
 	public void logoutbuttonOnAction(ActionEvent e) {
@@ -438,27 +461,34 @@ public class UserDashboardController {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
 		File selectedFile = fileChooser.showOpenDialog(new Stage());
+		System.out.println(selectedFile);
 
 		if (selectedFile != null) {
-			System.out.println("uygfurgu");
+			
 try {
 		
-				List<String[]> records = postModel.readCSV();
+				List<String[]> records = postModel.readCSV(selectedFile);
 				
 				if (records != null) {
-					System.out.println("Hi");
 
 					for (String[] record : records) {
 						System.out.println("please run");
 						
 						if (record.length >= 6) {
-							System.out.println(record);
+							System.out.println("Coming inside this");
+							
 							int id = Integer.parseInt(record[0]);
-							String author = record[1];
-							int likes = Integer.parseInt(record[2]);
-							int shares = Integer.parseInt(record[3]);
-							String content = record[4];
+							System.out.println(id);
+							String content = record[1];
+							System.out.println(content);
+							String author = record[2];
+							System.out.println(author);
+							int likes = Integer.parseInt(record[3]);
+							System.out.println(likes);
+							int shares = Integer.parseInt(record[4]);
+							System.out.println(shares);
 							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
+							System.out.println(record[5]);
 							LocalDateTime datetime = LocalDateTime.parse(record[5], formatter);
 
 							// Assuming you have a Post constructor that accepts these parameters
@@ -472,13 +502,15 @@ try {
 			}
 		
 			catch (NumberFormatException e) {
+				System.out.println(e.getMessage());
 				alert();
 			
 			} catch (DateTimeParseException e) {
+				System.out.println(e.getMessage());
 				alert();				
 			
 			} catch (Exception e) {
-			
+				System.out.println(e.getMessage());
 				alert();
 				
 			}

@@ -1,7 +1,6 @@
 package model;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,42 +11,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
-import java.sql.Date;
 
 public class PostModel {
 
-	@FXML
-	private Label errormessage;
-	@FXML
-	private PieChart piechart;
-	@FXML
-	private Pane paneview;
+	
 
 	private Connection connectDB;
-	private TextField searchtextField;
+	
 	private User user;
 
 	public PostModel() {
@@ -114,9 +93,13 @@ public class PostModel {
 		String checkpostQuery = "SELECT * FROM posts WHERE id = '" + searchid + "'";
 		PreparedStatement checkpostStatement = connectDB.prepareStatement(checkpostQuery);
 		ResultSet resultSet = checkpostStatement.executeQuery();
+		
 		Post post = null;
 		if (resultSet.next()) {
 			int id = resultSet.getInt("id");
+			if (id != searchid) {
+				return null;
+			}
 			String content = resultSet.getString("content");
 			String author = resultSet.getString("author");
 			int likes = resultSet.getInt("likes");
@@ -128,7 +111,6 @@ public class PostModel {
 		}
 
 		if (post == null) {
-
 			return null;
 		}
 
@@ -160,6 +142,9 @@ public class PostModel {
 
 	public List<Post> toplikes(int N) throws SQLException {
 		List<Post> posts = new ArrayList<>();
+		if (N < 0) {
+			return posts;
+		}
 		String toplikesquery = "SELECT * FROM posts ORDER BY likes DESC LIMIT ?";
 		PreparedStatement preparedStatement = connectDB.prepareStatement(toplikesquery);
 		preparedStatement.setInt(1, N);
@@ -184,6 +169,9 @@ public class PostModel {
 
 	public List<Post> topshares(int N) throws SQLException {
 		List<Post> posts = new ArrayList<>();
+		if (N < 0) {
+			return posts;
+		}
 		String topsharesquery = "SELECT * FROM posts ORDER BY shares DESC LIMIT ?";
 		PreparedStatement preparedStatement = connectDB.prepareStatement(topsharesquery);
 		preparedStatement.setInt(1, N);
@@ -205,7 +193,7 @@ public class PostModel {
 		return posts;
 	}
 
-	public boolean exportPostToCSV(int postId) {
+	public Post exportPostToCSV(int postId) {
 		try {
 
 			String query = "SELECT * FROM posts WHERE id = ?";
@@ -214,10 +202,14 @@ public class PostModel {
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
+			Post post = null;
 			// Check if the post with the specified ID exists
 			if (resultSet.next()) {
 				// Retrieve post details
 				int id = resultSet.getInt("id");
+				if (id != postId) {
+					return null;
+				}
 				String content = resultSet.getString("content");
 				String author = resultSet.getString("author");
 				int likes = resultSet.getInt("likes");
@@ -225,42 +217,20 @@ public class PostModel {
 				int userId = resultSet.getInt("userId");
 				Timestamp timestamp = resultSet.getTimestamp("DateTime");
 				LocalDateTime dateTime = timestamp.toLocalDateTime();
-
-				FileChooser fileChooser = new FileChooser();
-
-				// Set the initial directory (optional)
-				File initialDirectory = new File(System.getProperty("user.home"));
-				fileChooser.setInitialDirectory(initialDirectory);
-
-				// Set extension filters (optional)
-				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
-				fileChooser.getExtensionFilters().add(extFilter);
-
-				// Show save dialog
-				Stage stage = new Stage();
-				File file = fileChooser.showSaveDialog(stage);
-
-				if (file != null) {
-					// The user has chosen a file
-					String filePath = file.getAbsolutePath();
-					// Save to CSV
-					writeToCSV(filePath, id, content, author, likes, shares, userId, dateTime);
-
-					return true;
-				}
+				post = new Post(id,  content,  author, likes,  shares, userId,dateTime);
+				
 			}
+			return post;
 		} catch (SQLException e) {	
-
-			return false;
+			
+			return null;
 		}
-		return false;
 	}
 
-	private void writeToCSV(String filePath, int id, String content, String author, int likes, int shares, int userId,
-			LocalDateTime date_time) {
+	public void writeToCSV(String filePath, Post post) {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
 			writer.write("ID,Content,Author,likes,shares,userId,dateTime\n");
-			writer.write(id + "," + content + "," + author + "," + likes + "," + shares + "," + userId + "," + date_time
+			writer.write(post.getId() + "," + post.getContent() + "," + post.getAuthor() + "," + post.getLikes() + "," + post.getShares() + "," + post.getuserId() + "," + post.getDateTime()
 					+ "\n");
 
 		} catch (IOException e) {
@@ -285,9 +255,9 @@ public class PostModel {
 	}
 	
 	
-	public List<String[]> readCSV() {
+	public List<String[]> readCSV(File filePath) {
 		
-		String filePath="/Users/prathikshacp/Docs/RMIT/2 SEM/Advanced Programming/posts.csv";
+		
 		
         List<String[]> records = new ArrayList<>();
 
@@ -308,7 +278,7 @@ public class PostModel {
             }
         }catch (FileNotFoundException e) {
          
-          System.out.println("fILE NOT FOUND") ;
+          System.out.println("FILE NOT FOUND") ;
         }
             catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
