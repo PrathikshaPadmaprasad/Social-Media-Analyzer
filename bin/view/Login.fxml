@@ -50,5 +50,10 @@
       </Button>
       <Label fx:id="MessageLabel" layoutX="333.0" layoutY="488.0" prefHeight="29.0" prefWidth="501.0" />
       <Label layoutX="583.0" layoutY="321.0" text="Or" />
+      <Button fx:id="cancelButton" layoutX="532.0" layoutY="393.0" mnemonicParsing="false" onAction="#cancelButtonOnAction" prefHeight="1.0" prefWidth="116.0" style="-fx-background-color: #263F73;" text="Cancel" textFill="#fffefe">
+         <font>
+            <Font name="Arial Black" size="15.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

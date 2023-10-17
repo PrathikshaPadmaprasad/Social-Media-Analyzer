@@ -28,7 +28,8 @@ public class DisplayPostController {
 	private Label SharesLabel;
 	@FXML
 	private Button backButton;
-	
+	@FXML
+	private Label datetimeLabel;
 
 	
 public void setdetails(Post newSelection) {
@@ -38,6 +39,7 @@ public void setdetails(Post newSelection) {
 	ContentLabel.setText(newSelection.getContent());
 	LikesLabel.setText(String.valueOf(newSelection.getLikes()));
 	SharesLabel.setText(String.valueOf(newSelection.getShares()));
+	datetimeLabel.setText(String.valueOf(newSelection.getDateTime()));
 }
 
 

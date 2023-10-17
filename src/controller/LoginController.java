@@ -32,6 +32,8 @@ public class LoginController {
 	private TextField PasswordTextFiled;
 	@FXML
 	private Label MessageLabel;
+	@FXML
+	private Button cancelButton;
 
 	private Connection connectDB;
 	
@@ -99,5 +101,11 @@ public class LoginController {
 		    MessageLabel.setText("User is not registered");
 		}
 	
+	}
+	
+	
+	public void cancelButtonOnAction(ActionEvent e) {
+		Stage stage = (Stage) cancelButton.getScene().getWindow();
+		stage.close();
 	}
 }
