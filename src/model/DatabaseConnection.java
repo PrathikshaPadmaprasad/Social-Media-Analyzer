@@ -9,7 +9,7 @@ public class DatabaseConnection {
 	 public Connection connect() {
 		
 		 try {
-	            // db parameters
+	           
 	            String url = "jdbc:sqlite:database/databse.db";
 	            // create a connection to the database
 	            databaseLink = DriverManager.getConnection(url);

@@ -14,7 +14,7 @@ import java.sql.SQLException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -34,13 +34,15 @@ public class PostModel {
 		this.user = ApplicationModel.getInstance().getUser();
 	}
 
+	
+//	Function to add the post
 	public String addPost(int postid, String postcontent, String postauthor, int postshares, int postlikes,
 			LocalDateTime date_time) {
 		try {
 
 			Post newPost = new Post(postid, postcontent, postauthor, postshares, postlikes, user.getUserId(),
 					date_time);
-
+			System.out.println("Adding Post to database");
 			String insertUserQuery = "INSERT INTO posts (id,content,author,likes,shares,userId,DateTime) VALUES (?, ?, ?, ?, ?,?,?)";
 			PreparedStatement insertUserStatement = connectDB.prepareStatement(insertUserQuery);
 			insertUserStatement.setInt(1, newPost.getId());
@@ -49,12 +51,13 @@ public class PostModel {
 			insertUserStatement.setInt(4, newPost.getLikes());
 			insertUserStatement.setInt(5, newPost.getShares());
 			insertUserStatement.setInt(6, newPost.getuserId());
-//			java.sql.Date sqlDate = java.sql.Date.valueOf(newPost.getDateTime().toLocalDate());
-//			Time sqlTime = java.sql.Time.valueOf(newPost.getDateTime().toLocalTime());
-			Timestamp timestamp = Timestamp.valueOf(newPost.getDateTime());
+			 	String dateTimeString = newPost.getDateTime();  
+			    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+			    LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, formatter);
+			    Timestamp timestamp = Timestamp.valueOf(localDateTime);
+//			Timestamp timestamp = Timestamp.valueOf(newPost.getDateTime());
 			insertUserStatement.setTimestamp(7, timestamp);
-//			insertUserStatement.setDate(7, sqlDate);
-//			insertUserStatement.setTime(7, sqlTime);
+
 			insertUserStatement.executeUpdate();
 
 			return "Post Created Sucessfully";
@@ -64,6 +67,7 @@ public class PostModel {
 
 	}
 
+//	Function to get all the posts
 	public List<Post> getAllPosts() throws SQLException {
 		List<Post> posts = new ArrayList<>();
 		String getAllPostsQuery = "SELECT * FROM posts";
@@ -87,17 +91,22 @@ public class PostModel {
 		return posts;
 
 	}
-
+//Functions to search the post using post id
 	public Post searchbyId(int searchid) throws SQLException {
+		System.out.println(searchid);
 
 		String checkpostQuery = "SELECT * FROM posts WHERE id = '" + searchid + "'";
 		PreparedStatement checkpostStatement = connectDB.prepareStatement(checkpostQuery);
 		ResultSet resultSet = checkpostStatement.executeQuery();
 		
+
+		
 		Post post = null;
 		if (resultSet.next()) {
 			int id = resultSet.getInt("id");
+			
 			if (id != searchid) {
+				
 				return null;
 			}
 			String content = resultSet.getString("content");
@@ -108,15 +117,15 @@ public class PostModel {
 			Timestamp timestamp = resultSet.getTimestamp("DateTime");
 			LocalDateTime dateTime = timestamp.toLocalDateTime();
 			post = new Post(id, content, author, likes, shares, userid, dateTime);
+			return post;
 		}
-
-		if (post == null) {
-			return null;
+		else {
+			return post;
 		}
-
-		return post;
 	}
 
+	
+//	function to delete the post
 	public boolean deletepost(int postid, int userid) throws SQLException {
 
 		String checkQuery = "SELECT COUNT(*) FROM posts WHERE id = ? AND userId = ?";
@@ -139,7 +148,7 @@ public class PostModel {
 		}
 
 	}
-
+//Function to get the topmost likes 
 	public List<Post> toplikes(int N) throws SQLException {
 		List<Post> posts = new ArrayList<>();
 		if (N < 0) {
@@ -167,6 +176,7 @@ public class PostModel {
 		return posts;
 	}
 
+//Function to get the topmost shares
 	public List<Post> topshares(int N) throws SQLException {
 		List<Post> posts = new ArrayList<>();
 		if (N < 0) {
@@ -193,6 +203,7 @@ public class PostModel {
 		return posts;
 	}
 
+//function to export the post using id
 	public Post exportPostToCSV(int postId) {
 		try {
 
@@ -227,6 +238,7 @@ public class PostModel {
 		}
 	}
 
+//	function to write the post to csv
 	public void writeToCSV(String filePath, Post post) {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
 			writer.write("ID,Content,Author,likes,shares,userId,dateTime\n");
@@ -238,6 +250,7 @@ public class PostModel {
 		}
 	}
 
+//	Function to get the range of shares 
 	public ResultSet piechartforvip() {
 		try {
 			String query = "SELECT " + "COUNT(CASE WHEN shares >= 0 AND shares <= 99 THEN 1 END) AS range_0_to_99, "
@@ -254,7 +267,7 @@ public class PostModel {
 		}
 	}
 	
-	
+//function to read the csv file	
 	public List<String[]> readCSV(File filePath) {
 		
 		
@@ -267,7 +280,7 @@ public class PostModel {
 
             while ((line = br.readLine()) != null) {
                 if (isFirstLine) {
-                    // Skip the first line (header)
+                   
                     isFirstLine = false;
                     continue;
                 }

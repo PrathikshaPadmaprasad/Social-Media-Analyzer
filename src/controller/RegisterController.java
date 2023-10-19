@@ -48,16 +48,19 @@ public class RegisterController {
 		this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
 	}
 
+//	Function to cancel the application from Register scene
 	public void cancelButtonOnAction(ActionEvent e) {
 		Stage stage = (Stage) cancelButton.getScene().getWindow();
 		stage.close();
 	}
 
+//	Function to call the registeruser function when clicking on register button
 	public void registerButtonOnAction(ActionEvent e) {
 		registerUser();
 
 	}
 
+//Function to swicth from register to login
 	public void registerloginbuttonOnAction(ActionEvent e) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
@@ -84,18 +87,17 @@ public class RegisterController {
 
 		
 	
-
+//Function to register the user to the application
 	public void registerUser() {
 		String username = usernameTextFiled.getText().trim();
 		String password = PasswordTextFiled.getText().trim();
 		String firstName = FirstNameTextField.getText().trim();
 		String lastName = LastNameTextField.getText().trim();
 
-		// Check if any field is blank
+//		validating if username,password,firstname,lastname is not empty
 		if (username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
 			registerMessageLabel.setText("No Blank fields are allowed");
-			// Display an error message to the user (you can use an alert or a label for
-			// this)
+			
 			return;
 		}
 		
@@ -104,10 +106,7 @@ public class RegisterController {
 		// Check if the username already exists in the database
 		
 		if (userModel.isUserRegisteredAlready(username)) {
-//			            System.out.println("This username is already taken.");
 			registerMessageLabel.setText("This username is already registered");
-			// Display an error message to the user (you can use an alert or a label for
-			// this)
 			return;
 		}
 		

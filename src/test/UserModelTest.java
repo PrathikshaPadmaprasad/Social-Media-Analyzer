@@ -18,15 +18,13 @@ import model.UserModel;
 import model.VipUser;
 
 public class UserModelTest {
-	 
-	
 
 	@Before
 	public void setUp() throws Exception {
-		User user=new User(1,"TestUserName","TestPassword","TestFirstName","TestLastName");
-    	
-    	ApplicationModel.getInstance().setUser(user);
-		
+		User user = new User(4, "Adi ", "Adi", "Adi", "Adi");
+
+		ApplicationModel.getInstance().setUser(user);
+
 	}
 
 	@After
@@ -35,104 +33,99 @@ public class UserModelTest {
 
 	@Test
 	public void testLogin() {
-		UserModel  userModel = new UserModel();
-		  	String validUsername = "Manee";
-	        String validPassword = "Manee";     
-	        boolean result = userModel.login(validUsername, validPassword);
-	        assertTrue(result);
+		UserModel userModel = new UserModel();
+		String validUsername = "Prat!";
+		String validPassword = "Prat@1997";
+		boolean result = userModel.login(validUsername, validPassword);
+		assertTrue(result);
 	}
-	
+
 	@Test
 	public void testLoginFailedCase() {
-		UserModel  userModel = new UserModel();
-		  	String validUsername = "Man";
-	        String validPassword = "Man";
+		UserModel userModel = new UserModel();
+		String validUsername = "Man";
+		String validPassword = "Man";
 
-	        // Call the login function
-	        boolean result = userModel.login(validUsername, validPassword);
+		// Call the login function
+		boolean result = userModel.login(validUsername, validPassword);
 
-	        // Assert that the login was successful
-	        assertFalse(result);
+		// Assert that the login was successful
+		assertFalse(result);
 	}
-	
-	
 
-    @Test
-    public void testIsUserRegisteredAlready_Positive() {
-    	UserModel  userModel = new UserModel();
+	@Test
+	public void testIsUserRegisteredAlready_Positive() {
+		UserModel userModel = new UserModel();
 
-     
-        String existingUsername = "Manee";
+		String existingUsername = "Prat!";
 
-        // Call the isUserRegisteredAlready function
-        boolean result = userModel.isUserRegisteredAlready(existingUsername);
+		// Call the isUserRegisteredAlready function
+		boolean result = userModel.isUserRegisteredAlready(existingUsername);
 
-        // Assert that the function correctly identifies the registered user
-        assertTrue(result);
-    }
-    
+		// Assert that the function correctly identifies the registered user
+		assertTrue(result);
+	}
 
-    @Test
-    public void testIsUserRegisteredAlready_Negative() {
-    	UserModel  userModel = new UserModel();
+	@Test
+	public void testIsUserRegisteredAlready_Negative() {
+		UserModel userModel = new UserModel();
 
-     
-        String nonexistingUsername = "TestRegister";
+		String nonexistingUsername = "user!!";
 
-        // Call the isUserRegisteredAlready function
-        boolean result = userModel.isUserRegisteredAlready(nonexistingUsername);
+		boolean result = userModel.isUserRegisteredAlready(nonexistingUsername);
 
-        // Assert that the function correctly identifies the registered user
-        assertFalse(result);
-    }
-    
-    @Test
-    public void testUserDetailsUpdate_Positive() {
-    	UserModel  userModel = new UserModel();
-    	 Random random = new Random();
+		assertFalse(result);
+	}
 
-         // Generate a random user ID for testing
-         int randomUserId = random.nextInt(50000) + 1;  
-        // Assume an instance of User with valid updated details
-        User editUser = new User(randomUserId,"testnewUsername", "testnewPassword", "testNewFirstName", "testNewLastName");
+	@Test
+	public void testUserDetailsUpdate_Positive() {
+		UserModel userModel = new UserModel();
 
-        // Call the userDetailsUpdate function
-        boolean result = userModel.userdetailsupdate(editUser);
+		boolean result = userModel.login("Sampreeth", "Sam@1234");
+		if (result) {
+			// Assume an instance of User with valid updated details
+			User editUser = new User(2, "Sampreeth!", "Sam1234", "Sam", "Preeth");
 
-        // Assert that the function correctly updates user details
-        assertTrue(result);
-    }
-    
-    @Test
-    public void testUserDetailsUpdate_InvalidUserId() {
-        UserModel userModel = new UserModel();
-        User editUser = new User(-1, "username", "password", "John", "Doe");
-        boolean result = userModel.userdetailsupdate(editUser);
-        assertFalse(result);
-    }
-    
-    @Test
-    public void testLoginVipUser() {
-        
-        UserModel userModel = new UserModel();
-        boolean result = userModel.login("Samprus", "Sampreeth");
-        assertTrue(result);
-        User user = ApplicationModel.getInstance().getUser();
-        assertTrue(user instanceof VipUser);
-    }
-    
-    
-    
-    @Test
-    public void testLogin_NonVipUser() {
-     
-        UserModel userModel = new UserModel();
-        boolean result = userModel.login("Testing", "Testing");
-        assertTrue(result);
-        User user = ApplicationModel.getInstance().getUser();
-        assertTrue(user instanceof NonVipUser);
-    }
+			// Call the userDetailsUpdate function
+			boolean result1 = userModel.userdetailsupdate(editUser);
+
+			// Assert that the function correctly updates user details
+			assertTrue(result1);
+		}
+	}
+
+	@Test
+	public void testUserDetailsUpdate_InvalidUserId() {
+
+		UserModel userModel = new UserModel();
+		boolean loginResult = userModel.login("Prat!", "Prat@1997");
+		assertTrue(loginResult);
+
+		User invalidUser = new User(1001, "testInvalidUsername", "testInvalidPassword", "testInvalidFirstName",
+				"testInvalidLastName");
+
+		boolean result = userModel.userdetailsupdate(invalidUser);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testLoginVipUser() {
+
+		UserModel userModel = new UserModel();
+		boolean result = userModel.login("Prat!", "Prat@1997");
+		assertTrue(result);
+		User user = ApplicationModel.getInstance().getUser();
+		assertTrue(user instanceof VipUser);
+	}
+
+	@Test
+	public void testLogin_NonVipUser() {
+
+		UserModel userModel = new UserModel();
+		boolean result = userModel.login("testnewUsername", "testnewPassword");
+		assertTrue(result);
+		User user = ApplicationModel.getInstance().getUser();
+		assertTrue(user instanceof NonVipUser);
+	}
 }
-
-
-

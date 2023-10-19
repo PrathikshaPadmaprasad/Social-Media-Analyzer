@@ -28,7 +28,7 @@ public class Main extends Application {
 	@Override // Override the start method in the Application class
 	public void start(Stage primaryStage) throws IOException {
 		
-//		GET THE INSTANCE OF MAIN MODEL IN MAIN.JAVA
+		//Get the instance of main model in main.java
 		connectDB=ApplicationModel.getInstance().getDatabaseConnection();
 		
 		
@@ -36,8 +36,9 @@ public class Main extends Application {
 
 		Parent root = fxmlLoader.load();
 		LoginController loginController= fxmlLoader.getController();
-	
-		primaryStage.setTitle("Data Analytics Hub"); // Set the stage title
+		
+		//	set the stage title
+		primaryStage.setTitle("Data Analytics Hub"); 
 		
 		// Set up a close request event handler
         primaryStage.setOnCloseRequest(event -> {
@@ -51,7 +52,7 @@ public class Main extends Application {
                 	try {
 						connectDB.close();
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
 					}
                     System.out.println("Closing the application...");
@@ -60,16 +61,12 @@ public class Main extends Application {
                 }
             });
         });
-		primaryStage.setScene(new Scene(root, 864, 720));/* create a Scene object pass it here */ // Place the scene in
-																									// the stage
-		primaryStage.show(); // Display the stage
+		primaryStage.setScene(new Scene(root, 864, 720));
+		primaryStage.show(); 
 
 	}
 
-	/**
-	 * The main method is only needed for the IDE with limited JavaFX support. Not
-	 * needed for running from the command line.
-	 */
+	
 	public static void main(String[] args) {
 		launch(args);
 	}

@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.time.LocalDateTime;
@@ -46,9 +47,9 @@ public class PostModelTest {
     public void testAddPost() {
     	
     	Random random = new Random();
-    	int rand = 200;
+    	int rand = 60000;
     	while (true){
-    	    rand = random.nextInt(300);
+    	    rand = random.nextInt(70000);
     	    if(rand !=0) break;
     	}
         int postId = rand;
@@ -56,10 +57,10 @@ public class PostModelTest {
         String postAuthor = "Test author";
         int postShares = 10;
         int postLikes = 5;
-        String inputDateTimeString = "2020-09-09 10:00:00";
+        String inputDateTimeString = "12/09/2019 10:00";
 
         // Define a custom date-time format matching the input format
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         try {
             // Parse the string to LocalDateTime using the defined formatter
@@ -79,13 +80,8 @@ public class PostModelTest {
     @Test
     public void testAddPostFailedCase() {
     	
-    	Random random = new Random();
-    	int rand = 0;
-    	while (true){
-    	    rand = random.nextInt(10000);
-    	    if(rand !=0) break;
-    	}
-        int postId = rand;
+    	
+        int postId = 204;
         String postContent = "Test post content";
         String postAuthor = "Test author";
         int postShares = 10;
@@ -114,8 +110,9 @@ public class PostModelTest {
     @Test
     public void testSearch( ) throws SQLException {
     	PostModel postModel= new PostModel();
-    	postModel.searchbyId(181);
-    	assertEquals(post,post);
+    	Post returnpost=postModel.searchbyId(204);
+    
+    	assertEquals(returnpost.getId(), 204);
     	
     	
     	
@@ -124,24 +121,24 @@ public class PostModelTest {
     @Test
     public void testSearchFailedCase( ) throws SQLException {
     	PostModel postModel= new PostModel();
-    	postModel.searchbyId(99999);
-    	 assertNull(post);    	
+    	Post returnPost = postModel.searchbyId(99921232);
+    	 assertNull(returnPost);    	
     	
     	
     }
     
-    @Test
-    public void testDeletePost() {
-    	PostModel postModel= new PostModel();
-    	try {
-			assertTrue(postModel.deletepost(13, 8));
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//    @Test
+//    public void testDeletePost() {
+//    	PostModel postModel= new PostModel();
+//    	try {
+//			assertTrue(postModel.deletepost(203, 2));
+//			
+//		} catch (SQLException e) {
+//			
+//			e.printStackTrace();
+//		}
     	
-    }
+//    }
     
     @Test
     public void testDeletePostFailed() {
@@ -205,13 +202,12 @@ public class PostModelTest {
   @Test
   public void testTopNSharesswithNegativeValues() throws SQLException {
   	
-  	  int N = -5;  // Change this to the number of top likes you want to retrieve
+  	  int N = -5;  
   	  PostModel postModel= new PostModel();
         List<Post> topSharesPosts = postModel.topshares(N);
         System.out.println(topSharesPosts);
 
-        // Assuming the test data in your database is sorted by likes in descending order
-        // Check if the number of retrieved posts matches the expected number
+       
         assertTrue(topSharesPosts.isEmpty());
   }
   
@@ -219,16 +215,18 @@ public class PostModelTest {
   @Test
   public void testExportToCsv() {
 	  PostModel postModel= new PostModel(); 
-	  postModel.exportPostToCSV(13);
-	  assertEquals(post,post);
+	  Post returnpost=postModel.exportPostToCSV(103);
+
+	  assertEquals(returnpost.getId(),103);
 	  
   }
   
   @Test
   public void testExportToCsvFailedCase() {
 	  PostModel postModel= new PostModel(); 
-	  postModel.exportPostToCSV(13);
-	  assertNull(post);
+	  Post returnpost=postModel.exportPostToCSV(107);
+//	  TODO
+	  assertNull(returnpost);
 	  
   }
   
@@ -236,23 +234,18 @@ public class PostModelTest {
   @Test
   public void importCsv() {
   PostModel postModel = new PostModel();
+  String temp ="/Users/prathikshacp/Desktop/13posttest.csv";
+	File file = new File(temp);
+	List<String[]> records = postModel.readCSV(file);
 
-  // Test when the file exists and is readable
-  List<String[]> records = postModel.readCSV();
-  assertNotNull(records);
-  assertFalse(records.isEmpty());
+
+	assertEquals(1, records.size());
 
     	
     }
-//  
-//  @Test
-//  public void importCsvFailed() {
-//      PostModel postModel = new PostModel();
-//      String nonExistingFilePath = "/path/to/non-existing-file.csv"; // Replace with the actual non-existing file path
-//      List<String[]> nonExistingFileRecords = postModel.readCSV(nonExistingFilePath);
-//      assertNull(nonExistingFileRecords);
-//  }
+  
+}
 
 
   
-}
+

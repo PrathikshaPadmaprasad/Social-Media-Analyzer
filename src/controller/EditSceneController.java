@@ -48,6 +48,7 @@ public class EditSceneController {
 		this.user=ApplicationModel.getInstance().getUser();
 	}
 
+//	Function to update the details of the users
 	public void UpdateButtonOnAction(ActionEvent e) {
 
 		String username = UsernameTextField.getText().trim();
@@ -55,11 +56,13 @@ public class EditSceneController {
 		String firstName = FirstNameTextField.getText().trim();
 		String lastName = LastNameTextField.getText().trim();
 		
+//		validating username,password,firstname,lastname is not empty
 		if (username.isEmpty()||password.isEmpty()||firstName.isEmpty()||lastName.isEmpty()) {
 			updateLabel.setText("No blanks filed allowed");
 			return;
 		}
 		
+//validating if the user is Vip or Non Vip user
 		User editUser;
 		if (user instanceof VipUser) {
 			editUser = new VipUser(this.user.getUserId(), username, password, firstName, lastName);
@@ -76,6 +79,8 @@ public class EditSceneController {
 			updateLabel.setText("Update unsuccessful");
 		}
 	}
+	
+//Function to go back to userdashboard from update scene
 	public void editbackButtonOnAction(ActionEvent e) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UserDashboard.fxml"));
@@ -84,10 +89,10 @@ public class EditSceneController {
 			
 			Scene UserScene = new Scene(UserSceneParent);
 
-			// Get the stage information
+			
 			Stage stage = (Stage) editbackbutton.getScene().getWindow();
 
-			// SwUserDashboardController userDashboardController = loader.getController();
+		
 			udc.displayMessage();
 			udc.displayUserDetails();
 			udc.populateAllPosts();

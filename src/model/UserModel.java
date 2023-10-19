@@ -123,6 +123,7 @@ public class UserModel {
 
 			int rowsUpdated = checkUserStatement.executeUpdate();
 			if (rowsUpdated > 0) {
+				System.out.println("updated");
 
 				ApplicationModel.getInstance().setUser(edituser);
 				return true;

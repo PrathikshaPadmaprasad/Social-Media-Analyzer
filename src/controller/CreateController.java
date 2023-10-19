@@ -52,12 +52,14 @@ public CreateController() {
 	this.connectDB=ApplicationModel.getInstance().getDatabaseConnection();
 	this.user=ApplicationModel.getInstance().getUser();
 }
-	
+
+//Triggers when user wants to create a post and click on create button
 public void createButtonOnAction(ActionEvent e) throws SQLException {
 	int postid;
 	int postshares;
 	int postlikes;
 	LocalDateTime date_time;
+//	check if the postid field is not empty and should be a positive integer
 	try {
 		if(postidTextField.getText().trim().isEmpty()) {
 			warningLabel.setText("Post id  should not be empty");
@@ -66,43 +68,44 @@ public void createButtonOnAction(ActionEvent e) throws SQLException {
 		postid = Integer.parseInt(postidTextField.getText().trim());
 	 if (postid <= 0) { 
 	        warningLabel.setText("Post id should be a positive integer");
-	        return; // Abort further processing
+	        return; 
 	    }
 	 	} catch (NumberFormatException e1) {
 		warningLabel.setText("Invalid post ID. Post ID should be an integer.");
-	    // Handle the error, display a message to the user, or throw an exception
-	    return; // Abort further processing
+	    return; 
 	}
-	
+//	validating content field is not empty and should be a positive integer
 	String postcontent = contentTextField.getText().trim();
 	if (postcontent.isEmpty()) {
 		warningLabel.setText("Post content field cannot be empty");
 		return;
 	}
 
+//	validating autor is not empty and should be a positive integer
 	String postauthor = authorTextField.getText().trim();
 	if (postauthor.isEmpty()) {
 		warningLabel.setText("Post author field cannot be empty");
 		return;
 	}
+	
+//	validating if shares field is not empty and should not be empty and should be a positive integer.
 		try {
 			if(sharesTextField.getText().trim().isEmpty()) {
 				warningLabel.setText("Post shares  should not be empty");
 				return;
 			}
 		postshares = Integer.parseInt(sharesTextField.getText().trim());
-		 if (postshares <= 0) { 
+		 if (postshares < 0) { 
 		        warningLabel.setText("Post shares should be a positive integer");
-		        return; // Abort further processing
+		        return; 
 		    }
 		 	} catch (NumberFormatException e1) {
 			warningLabel.setText("Invalid number. Post share should be an integer.");
-		    // Handle the error, display a message to the user, or throw an exception
-		    return; // Abort further processing
+		    return; 
 		}
 		
 	
-	
+//		validating if likes field is not empty and should not be empty and should be a positive integer.	
 	
 	try {
 		if(likesTextField.getText().trim().isEmpty()) {
@@ -110,20 +113,19 @@ public void createButtonOnAction(ActionEvent e) throws SQLException {
 			return;
 		}
 	postlikes = Integer.parseInt(likesTextField.getText().trim());
-	 if (postlikes <= 0) { 
+	 if (postlikes < 0) { 
 	        warningLabel.setText("Post likes should be a positive integer");
-	        return; // Abort further processing
+	        return; 
 	    }
 	 	} catch (NumberFormatException e1) {
 		warningLabel.setText("Invalid number. Post likes should be an integer.");
-	    // Handle the error, display a message to the user, or throw an exception
-	    return; // Abort further processing
+	    return; 
 	}
 	try {
 		 String dateTimeString = date_timeTextField.getText();
-		 date_time=LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		 date_time=LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 	}catch(DateTimeException e2) {
-		warningLabel.setText("Invalid date time format.Please provide the date time format in yyy-mm-dd hh:mm:ss");
+		warningLabel.setText("Invalid date time format.Please provide the date time format in dd/MM/yyyy HH:mm ");
 		return;
 	}
 	
@@ -131,10 +133,10 @@ public void createButtonOnAction(ActionEvent e) throws SQLException {
 	PostModel postModel=new PostModel();
 	
 	String outputAfterInserting = postModel.addPost(postid,postcontent,postauthor,postshares,postlikes,date_time);
-//	System.out.print(outputAfterInserting);
 	warningLabel.setText(outputAfterInserting);
 }
 
+//Function to get back to userdashboard from create post scene
 public void createbackbuttonOnAction(ActionEvent e) {
 	try {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UserDashboard.fxml"));

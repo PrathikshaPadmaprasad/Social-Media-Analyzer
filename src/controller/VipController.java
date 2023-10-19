@@ -20,7 +20,9 @@ public class VipController {
 	private PieChart piechart;
 	@FXML
 	private Button backbutton;
+
 	
+//	function to sow the  pie chart
 	public void pie() throws SQLException {
 		PostModel postModel=new PostModel();
 		ResultSet result=postModel.piechartforvip();
@@ -37,7 +39,8 @@ public class VipController {
 			piechart.getData().addAll(pieChartData)	;		
 		}
 	}
-	
+
+//	function to go back to user dashboard
 	public void backbuttonOnAction(ActionEvent e) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UserDashboard.fxml"));

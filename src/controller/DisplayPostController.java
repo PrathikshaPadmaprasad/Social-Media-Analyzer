@@ -31,7 +31,8 @@ public class DisplayPostController {
 	@FXML
 	private Label datetimeLabel;
 
-	
+
+//Functions to display the post contents 
 public void setdetails(Post newSelection) {
 	
 	PostidLabel.setText(String.valueOf(newSelection.getId()));
@@ -42,7 +43,7 @@ public void setdetails(Post newSelection) {
 	datetimeLabel.setText(String.valueOf(newSelection.getDateTime()));
 }
 
-
+//Function to get back to user dashboard scene
 public void backbuttonOnAction(ActionEvent e) {
 	try {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UserDashboard.fxml"));

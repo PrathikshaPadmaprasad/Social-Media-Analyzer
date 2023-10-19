@@ -1,5 +1,6 @@
 package model;
 
+
 public class NonVipUser extends User{
 
 	public NonVipUser(int userId, String userName, String password, String firstName, String lastName) {

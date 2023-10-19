@@ -42,7 +42,7 @@ public class LoginController {
 	}
 
 	
-
+//function to swicth to register scene from login when clicking on register button.
 	public void regButtonOnAction(ActionEvent e) throws IOException {
 
 		try {
@@ -52,7 +52,7 @@ public class LoginController {
 		
 			Scene registerScene = new Scene(registerParent);
 
-			// Get the stage information
+			
 			Stage stage = (Stage) SignUpButton.getScene().getWindow();
 
 			// Switch scene
@@ -68,18 +68,21 @@ public class LoginController {
 		}
 	}
 
+//	fucntion to login the user to userdashboard.
 	public void LoginButtonOnAction(ActionEvent e) throws IOException, SQLException {
 		UserModel user=new UserModel();
 		
 		String username = usernameTextFiled.getText();
 		String password = PasswordTextFiled.getText();
 		
+//		validating username and password is not empty
+		
 		if(username.isEmpty()||password.isEmpty()) {
 			MessageLabel.setText("No blank fields are allowed");
 			return;
 		}
 		
-		
+//	checking if the user is already registered before logging in.	
 		boolean isUserLoggedIn = user.login(username, password);
 
 		if (isUserLoggedIn) {
@@ -103,7 +106,7 @@ public class LoginController {
 	
 	}
 	
-	
+//	function to cancel the application.
 	public void cancelButtonOnAction(ActionEvent e) {
 		Stage stage = (Stage) cancelButton.getScene().getWindow();
 		stage.close();

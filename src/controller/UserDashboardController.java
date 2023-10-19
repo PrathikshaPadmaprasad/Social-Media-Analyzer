@@ -69,6 +69,8 @@ public class UserDashboardController {
 	private Label errormessage;
 	@FXML
 	private Button postsbutton;
+	@FXML
+	private Button piebutton;
 
 	private Connection connectDB;
 
@@ -108,6 +110,7 @@ public class UserDashboardController {
 
 	}
 
+//	Function to deisplay the message when user loggs in to the user dashboard.
 	public void displayMessage() {
 		vipbutton.setVisible(!(user instanceof VipUser));
 		piebutton.setVisible(user instanceof VipUser);
@@ -124,6 +127,8 @@ public class UserDashboardController {
 
 	}
 
+	
+//Function to display all the details of user in the dashboard
 	public void displayUserDetails() {
 		UserNameLabel.setText(this.user.getUserName());
 		PasswordLabel.setText(user.getPassword());
@@ -131,6 +136,8 @@ public class UserDashboardController {
 		LastNameLabel.setText(user.getLastName());
 	}
 
+	
+//	fubction to swicth to edit scene whrn clicking on edit button
 	public void EditButtonOnAction(ActionEvent e) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditScene.fxml"));
@@ -139,7 +146,7 @@ public class UserDashboardController {
 
 			Scene EditScene = new Scene(EditSceneParent);
 
-			// Get the stage information
+			
 			Stage stage = (Stage) EditButton.getScene().getWindow();
 
 			// Switch scene
@@ -155,6 +162,8 @@ public class UserDashboardController {
 		}
 	}
 
+	
+//	Function to siwtch the scene from userdashbaord to create scene when clicking on create button
 	public void CreateButtonOnAction(ActionEvent e) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreateScene.fxml"));
@@ -176,8 +185,9 @@ public class UserDashboardController {
 
 	}
 
-	public void populatePosts(ObservableList<Post> observablelist) throws SQLException {
-
+//	Function to populate posts on the table view in user dashboard.
+	private void populatePosts(ObservableList<Post> observablelist) throws SQLException {
+//Setting all the values in the table 
 		postIdcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
 		Authorcolumn.setCellValueFactory(new PropertyValueFactory<>("Author"));
 		Likescolumn.setCellValueFactory(new PropertyValueFactory<>("Likes"));
@@ -189,12 +199,14 @@ public class UserDashboardController {
 
 		tableview.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
-				// Handle the selected item
+				
 				handleItemSelected(newSelection);
 			}
 		});
 	}
 
+	
+//	functions to populate all posts
 	public void populateAllPosts() throws SQLException {
 		PostModel postModel = new PostModel();
 		List<Post> posts = postModel.getAllPosts();
@@ -203,6 +215,8 @@ public class UserDashboardController {
 		populatePosts(observablelist);
 	}
 
+
+//	function to swicth the scene to display posts when clicking on any items in the table 
 	private void handleItemSelected(Post newSelection) {
 
 		try {
@@ -212,7 +226,7 @@ public class UserDashboardController {
 			dsp.setdetails(newSelection);
 			Scene displayPostScene = new Scene(displayPostParent);
 
-			// Get the stage information
+			
 			Stage stage = (Stage) tableview.getScene().getWindow();
 
 			// Switch scene
@@ -229,6 +243,8 @@ public class UserDashboardController {
 
 	}
 
+	
+//	Function to search the posts using postid
 	public void serachButtonOnAction(ActionEvent e) {
 		PostModel postModel = new PostModel();
 		List<Post> postsList = new ArrayList<>();
@@ -244,7 +260,6 @@ public class UserDashboardController {
 				errormessage.setText("Post with ID " + searchid + " does not exist.");
 				return;
 			}
-//			System.out.println(post);
 			postsList.add(post);
 			ObservableList<Post> observablelist = FXCollections.observableArrayList(postsList);
 			populatePosts(observablelist);
@@ -258,6 +273,8 @@ public class UserDashboardController {
 
 	}
 
+	
+//	Function to delete the post using post id
 	public void deleteButtonOnAction(ActionEvent e) {
 
 		if (searchtextField.getText().isEmpty()) {
@@ -287,6 +304,8 @@ public class UserDashboardController {
 
 	}
 
+	
+//	Functions to get the top most likes using no of posts
 	public void likesokButtonOnAction(ActionEvent e) {
 
 		if (mostlikesTextField.getText().isEmpty()) {
@@ -315,6 +334,7 @@ public class UserDashboardController {
 		}
 	}
 
+//	Functions to get the top most shares using no of posts
 	public void sharesokButtonOnAction(ActionEvent e) {
 
 		if (mostsharesTextField.getText().isEmpty()) {
@@ -342,6 +362,8 @@ public class UserDashboardController {
 		}
 	}
 
+	
+//	Function to export the posts using post id
 	public void exportbuttonOnAction(ActionEvent e) {
 
 		if (searchtextField.getText().isEmpty()) {
@@ -361,22 +383,21 @@ public class UserDashboardController {
 		
 			FileChooser fileChooser = new FileChooser();
 			
-			// Set the initial directory (optional)
 			File initialDirectory = new File(System.getProperty("user.home"));
 			fileChooser.setInitialDirectory(initialDirectory);
 			
-			// Set extension filters (optional)
+			
 			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
 			fileChooser.getExtensionFilters().add(extFilter);
 			
-			// Show save dialog
+		
 			Stage stage = new Stage();
 			File file = fileChooser.showSaveDialog(stage);
 			
 			if (file != null) {
-				// The user has chosen a file
+			
 				String filePath = file.getAbsolutePath();
-				// Save to CSV
+				
 				postModel.writeToCSV(filePath, post);
 			}
 			errormessage.setText("Post with ID " + postid + " exported to CSV successfully.");
@@ -384,6 +405,8 @@ public class UserDashboardController {
 			errormessage.setText("Post with ID " + postid + " not found.");
 		}	
 	}
+	
+//	function to logout from the application
 
 	public void logoutbuttonOnAction(ActionEvent e) {
 		try {
@@ -408,6 +431,8 @@ public class UserDashboardController {
 
 	}
 
+	
+//	Function  to become vip user when clicking on upgrade 
 	public void vipbuttonOnAction(ActionEvent e) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("VIP Confirmation Dialog");
@@ -425,8 +450,7 @@ public class UserDashboardController {
 		}
 	}
 
-	@FXML
-	private Button piebutton;
+//	Fubction to display pie chart of range of shares for vip users
 
 	public void piebuttonOnAction(ActionEvent e) {
 
@@ -447,7 +471,8 @@ public class UserDashboardController {
 		}
 	}
 
-	public void alert() {
+//	function to show alert when there is error in importing
+	private void alert() {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Import Error");
 		alert.setHeaderText("Error importing CSV");
@@ -456,7 +481,8 @@ public class UserDashboardController {
 
 	}
 
-	public void importCSV() {
+//	Function to import the bulk csv file
+	private void importCSV() {
 		PostModel postModel= new PostModel();
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
@@ -466,7 +492,6 @@ public class UserDashboardController {
 		if (selectedFile != null) {
 			
 try {
-		
 				List<String[]> records = postModel.readCSV(selectedFile);
 				
 				if (records != null) {
@@ -487,7 +512,7 @@ try {
 							System.out.println(likes);
 							int shares = Integer.parseInt(record[4]);
 							System.out.println(shares);
-							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
+							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 							System.out.println(record[5]);
 							LocalDateTime datetime = LocalDateTime.parse(record[5], formatter);
 
@@ -519,10 +544,13 @@ try {
 
 	}
 
+	
+//	Function to call importcsv function when clicking on import button
 	public void importbuttonOnAction(ActionEvent e) {
 		importCSV();
 	}
 	
+//	Funbctions to display all posts when clicking of show all posts button.
 	public void postsbuttonOnAction(ActionEvent e) throws SQLException {
 		
 		populateAllPosts();

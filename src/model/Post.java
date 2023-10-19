@@ -74,7 +74,7 @@ public class Post {
 
 public String getDateTime() {
 	
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 	String formattedDateTime = date_time.format(formatter);
 
 	return formattedDateTime;
