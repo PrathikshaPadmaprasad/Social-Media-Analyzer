@@ -13,16 +13,16 @@
          <font>
             <Font name="Times New Roman Bold" size="20.0" />
          </font></Label>
-      <Label fx:id="ContentLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="372.0" layoutY="250.0" prefHeight="19.0" prefWidth="121.0" />
-      <Label fx:id="LikesLabel" contentDisplay="CENTER" layoutX="367.0" layoutY="307.0" prefHeight="19.0" prefWidth="121.0" />
-      <Label fx:id="SharesLabel" layoutX="367.0" layoutY="351.0" prefHeight="19.0" prefWidth="121.0" />
+      <Label fx:id="ContentLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="428.0" layoutY="250.0" prefHeight="19.0" prefWidth="121.0" />
+      <Label fx:id="LikesLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="428.0" layoutY="307.0" prefHeight="19.0" prefWidth="121.0" />
+      <Label fx:id="SharesLabel" alignment="CENTER" layoutX="433.0" layoutY="356.0" prefHeight="19.0" prefWidth="121.0" />
       <Label layoutX="271.0" layoutY="142.0" prefHeight="27.0" prefWidth="85.0" text="Postid">
          <font>
             <Font name="Times New Roman Bold" size="20.0" />
          </font></Label>
       <Button fx:id="backButton" layoutX="771.0" layoutY="631.0" mnemonicParsing="false" onAction="#backbuttonOnAction" style="-fx-background-color: #263F73;" text="Back" textFill="#fcfcfc" />
-      <Label fx:id="PostidLabel" layoutX="356.0" layoutY="146.0" prefHeight="19.0" prefWidth="121.0" />
-      <Label fx:id="AuthorLabel" layoutX="367.0" layoutY="205.0" prefHeight="19.0" prefWidth="121.0" />
+      <Label fx:id="PostidLabel" alignment="CENTER" layoutX="428.0" layoutY="146.0" prefHeight="19.0" prefWidth="121.0" />
+      <Label fx:id="AuthorLabel" alignment="CENTER" layoutX="428.0" layoutY="205.0" prefHeight="19.0" prefWidth="121.0" />
       <Label layoutX="275.0" layoutY="304.0" prefHeight="24.0" prefWidth="77.0" text="Likes">
          <font>
             <Font name="Times New Roman Bold" size="20.0" />
@@ -55,6 +55,6 @@
             <Font name="Times New Roman Bold" size="20.0" />
          </font>
       </Label>
-      <Label fx:id="datetimeLabel" layoutX="387.0" layoutY="417.0" prefHeight="19.0" prefWidth="139.0" />
+      <Label fx:id="datetimeLabel" alignment="CENTER" layoutX="433.0" layoutY="416.0" prefHeight="19.0" prefWidth="139.0" />
    </children>
 </AnchorPane>

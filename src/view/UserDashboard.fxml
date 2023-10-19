@@ -26,17 +26,17 @@
          </font></Label>
       <Label layoutX="27.0" layoutY="137.0" text="FirstName">
          <font>
-            <Font name="Times New Roman" size="15.0" />
+            <Font name="Times New Roman Bold" size="15.0" />
          </font></Label>
       <Label layoutX="26.0" layoutY="162.0" text="LastName">
          <font>
             <Font name="Times New Roman Bold" size="15.0" />
          </font></Label>
       <Button fx:id="EditButton" layoutX="33.0" layoutY="198.0" mnemonicParsing="false" onAction="#EditButtonOnAction" prefHeight="26.0" prefWidth="52.0" style="-fx-background-color: #263F73;" text="EDIT" textFill="#fffdfd" />
-      <Label fx:id="PasswordLabel" layoutX="112.0" layoutY="110.0" prefHeight="20.0" prefWidth="200.0" />
-      <Label fx:id="FirstNameLabel" layoutX="118.0" layoutY="136.0" prefHeight="20.0" prefWidth="200.0" />
-      <Label fx:id="LastNameLabel" layoutX="109.0" layoutY="161.0" prefHeight="20.0" prefWidth="200.0" />
-      <Label fx:id="UserNameLabel" layoutX="112.0" layoutY="86.0" prefHeight="20.0" prefWidth="200.0" />
+      <Label fx:id="PasswordLabel" alignment="CENTER" layoutX="112.0" layoutY="110.0" prefHeight="20.0" prefWidth="200.0" />
+      <Label fx:id="FirstNameLabel" alignment="CENTER" layoutX="111.0" layoutY="136.0" prefHeight="20.0" prefWidth="207.0" />
+      <Label fx:id="LastNameLabel" alignment="CENTER" layoutX="109.0" layoutY="161.0" prefHeight="20.0" prefWidth="200.0" />
+      <Label fx:id="UserNameLabel" alignment="CENTER" layoutX="112.0" layoutY="86.0" prefHeight="20.0" prefWidth="200.0" />
       <Button fx:id="CreateButton" layoutX="736.0" layoutY="297.0" mnemonicParsing="false" onAction="#CreateButtonOnAction" prefHeight="26.0" prefWidth="132.0" style="-fx-background-color: #263F73;" text="create" textFill="#fffafa" />
       <TableView fx:id="tableview" layoutX="27.0" layoutY="472.0" prefHeight="199.0" prefWidth="782.0">
         <columns>
