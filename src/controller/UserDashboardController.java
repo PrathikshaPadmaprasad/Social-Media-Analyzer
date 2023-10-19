@@ -472,11 +472,11 @@ public class UserDashboardController {
 	}
 
 //	function to show alert when there is error in importing
-	private void alert() {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("Import Error");
-		alert.setHeaderText("Error importing CSV");
-		alert.setContentText("An error occurred while importing the CSV file. Please check the file format.");
+	private void alert(String message,String title,String header,AlertType type) {
+		Alert alert = new Alert(type);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(message);
 		alert.showAndWait();
 
 	}
@@ -503,6 +503,11 @@ try {
 							System.out.println("Coming inside this");
 							
 							int id = Integer.parseInt(record[0]);
+							Post postReturned =postModel.searchbyId(id);
+							if (postReturned != null) {
+								alert("duplicate post id","Import Error","Import Failed",AlertType.ERROR);
+								return;
+							}
 							System.out.println(id);
 							String content = record[1];
 							System.out.println(content);
@@ -520,6 +525,7 @@ try {
 							Post post = new Post(id, author, content, likes, shares, user.getUserId(), datetime);
 							tableview.getItems().add(post);
 							postModel.addPost(id, content, author, shares, likes, datetime);
+							alert("Post imported successfully","Import Success","Import Completed",AlertType.CONFIRMATION);
 						}
 					}
 				}
@@ -528,15 +534,16 @@ try {
 		
 			catch (NumberFormatException e) {
 				System.out.println(e.getMessage());
-				alert();
+			
+				alert("An error occurred while importing the CSV file. Please check the file format","Import Error","Import Failed",AlertType.ERROR);
 			
 			} catch (DateTimeParseException e) {
 				System.out.println(e.getMessage());
-				alert();				
+				alert("An error occurred while importing the CSV file. Please check the file format of DateTime","Import Error","Import Failed",AlertType.ERROR);;				
 			
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
-				alert();
+				alert("An error occurred while importing the CSV file. Please check the file format ","Import Error","Import Failed",AlertType.ERROR);
 				
 			}
 

@@ -58,18 +58,16 @@ public class PostModelTest {
         int postShares = 10;
         int postLikes = 5;
         String inputDateTimeString = "12/09/2019 10:00";
-
-        // Define a custom date-time format matching the input format
+    
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
         try {
-            // Parse the string to LocalDateTime using the defined formatter
+          
             LocalDateTime dateTime = LocalDateTime.parse(inputDateTimeString, formatter);
 
             // Call the addPost method
             String result = post.addPost(postId, postContent, postAuthor, postShares, postLikes, dateTime);
 
-            // Check if the result is as expected (e.g., "Post Created Successfully")
+            
             assertEquals("Post Created Sucessfully", result);
         } catch (Exception e) {
             fail("An unexpected exception occurred: " + e.getMessage());
