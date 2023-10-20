@@ -291,6 +291,7 @@ public class UserDashboardController {
 			if (isDeleted) {
 
 				populateAllPosts();
+				errormessage.setText("Post successfully deleted. (Post ID:" + deleteid +")");
 			} else {
 				errormessage.setText("Post deletion failed. (Post ID:" + deleteid +") not found or does not belong to you.");
 			}
@@ -525,9 +526,9 @@ try {
 							Post post = new Post(id, author, content, likes, shares, user.getUserId(), datetime);
 							tableview.getItems().add(post);
 							postModel.addPost(id, content, author, shares, likes, datetime);
-							alert("Post imported successfully","Import Success","Import Completed",AlertType.CONFIRMATION);
 						}
 					}
+					alert("Post imported successfully","Import Success","Import Completed",AlertType.CONFIRMATION);
 				}
 
 			}
